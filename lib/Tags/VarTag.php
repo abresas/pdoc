@@ -8,7 +8,7 @@ class VarTag
     public $type;
     public $variable;
     public $description;
-    public function __construct($type, $variable, $description)
+    public function __construct(string $type, $variable = null, $description = '')
     {
         $this->type = $type;
         $this->variable = $variable;

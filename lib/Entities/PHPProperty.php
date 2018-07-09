@@ -8,7 +8,6 @@ use \PDoc\Tags\VarTag;
 class PHPProperty extends AbstractEntity implements \JsonSerializable
 {
     public $type;
-    public $description = '';
     public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock)
     {
         parent::__construct('property', $name, $loc, $docBlock);
@@ -18,12 +17,17 @@ class PHPProperty extends AbstractEntity implements \JsonSerializable
         return [
             'name' => $this->name,
             'type' => $this->type,
-            'description' => $this->description
+            'shortDescription' => $this->shortDescription,
+            'longDescription' => $this->longDescription
         ];
     }
     public function handleVarTag(VarTag $tag)
     {
+        if ($tag->variable !== null && $tag->variable !== $this->name) {
+            error_log($this->sourceLocation . ': @var tag variable name "' . $tag->variable . '" does not match the subsequent property.');
+            return;
+        }
         $this->type = $tag->type;
-        $this->description = $tag->description;
+        $this->shortDescription = $tag->description;
     }
 }

@@ -23,7 +23,8 @@ class PHPMethod extends AbstractEntity implements \JsonSerializable
     public function handleParamTag(ParamTag $paramTag)
     {
         if (!isset($this->parameters[$paramTag->variable])) {
-            throw new \Exception('Found @param tag for ' . $paramTag->variable . ', but there is no such parameter.');
+            error_log($this->sourceLocation . ': Found @param tag for ' . $paramTag->variable . ', but there is no such parameter.');
+            return;
         }
         $param = $this->parameters[$paramTag->variable];
         $param->type = $paramTag->type;

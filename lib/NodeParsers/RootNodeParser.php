@@ -5,37 +5,39 @@ use \ast\Node;
 
 use \PDoc\DocBlock;
 use \PDoc\Entities\PHPNamespace;
+use \PDoc\ParseContext;
 use \PDoc\SourceLocation;
 
 class RootNodeParser extends AbstractNodeParser
 {
     protected $classNodeParser;
     protected $functionNodeParser;
+    protected $namespaceNodeParser;
 
-    public function __construct(string $filePath)
+    public function __construct()
     {
-        parent::__construct($filePath);
-        $this->classNodeParser = new ClassNodeParser($filePath);
-        $this->functionNodeParser = new FunctionNodeParser($this->filePath);
+        parent::__construct();
+        $this->classNodeParser = new ClassNodeParser();
+        $this->functionNodeParser = new FunctionNodeParser();
+        $this->namespaceNodeParser = new NamespaceNodeParser();
     }
-    public function parse(Node $node): PHPNamespace
+    public function parse(Node $node, string $filePath): FileParseResult
     {
         $nsNode = $this->astFinder->firstOfKind($node, \ast\AST_NAMESPACE);
         if (is_null($nsNode)) {
-            $sourceLoc = new SourceLocation($this->filePath, $node->lineno);
+            $sourceLoc = new SourceLocation($filePath, $node->lineno);
             $namespace = new PHPNamespace('Global', $sourceLoc, new DocBlock('', '', []));
         } else {
-            $astParser = new NamespaceNodeParser($this->filePath);
-            $namespace = $astParser->parse($nsNode);
+            $namespace = $this->namespaceNodeParser->parse($nsNode, $filePath);
         }
 
-        $classes = $this->astFinder->parseWith($node, \ast\AST_CLASS, $this->classNodeParser);
-        $namespace->addClasses($classes);
+        $ctx = new ParseContext($filePath, $namespace);
 
-        $functions = $this->astFinder->parseWith($node, \ast\AST_FUNC_DECL, $this->functionNodeParser);
-        $namespace->addFunctions($functions);
+        $classes = $this->astFinder->parseWith($node, $ctx, \ast\AST_CLASS, $this->classNodeParser);
 
-        return $namespace;
+        $functions = $this->astFinder->parseWith($node, $ctx, \ast\AST_FUNC_DECL, $this->functionNodeParser);
+
+        return new FileParseResult($namespace, $classes, $functions);
     }
     public function injectClassNodeParser($nodeParser)
     {
@@ -44,5 +46,9 @@ class RootNodeParser extends AbstractNodeParser
     public function injectFunctionNodeParser($nodeParser)
     {
         $this->functionNodeParser = $nodeParser;
+    }
+    public function injectNamespaceNodeParser($nodeParser)
+    {
+        $this->namespaceNodeParser = $nodeParser;
     }
 }

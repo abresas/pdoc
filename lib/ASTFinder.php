@@ -34,11 +34,11 @@ class ASTFinder
         }, []);
         return $nodes;
     }
-    public function parseWith($root, int $kind, AbstractNodeParser $parser): array
+    public function parseWith($root, ParseContext $ctx, int $kind, AbstractNodeParser $parser): array
     {
         $nodes = $this->byKind($root, $kind);
-        return array_map(function ($node) use ($parser) {
-            return $parser->parse($node);
+        return array_map(function ($node) use ($parser, $ctx) {
+            return $parser->parse($node, $ctx);
         }, $nodes);
     }
 }

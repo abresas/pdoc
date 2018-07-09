@@ -2,6 +2,8 @@
 namespace PDoc\Entities;
 
 use \PDoc\DocBlock;
+use \PDoc\Entities\PHPClass;
+use \PDoc\Entities\PHPFunction;
 use \PDoc\SourceLocation;
 
 class PHPNamespace extends AbstractEntity implements \JsonSerializable
@@ -27,12 +29,20 @@ class PHPNamespace extends AbstractEntity implements \JsonSerializable
             'functions' => $this->functions,
         ];
     }
-    public function addClasses($classes)
+    public function addClasses(array $classes)
     {
         $this->classes = $classes;
     }
-    public function addFunctions($functions)
+    public function addClass(PHPClass $class)
+    {
+        $this->classes[] = $class;
+    }
+    public function addFunctions(array $functions)
     {
         $this->functions = $functions;
+    }
+    public function addFunction(PHPFunction $function)
+    {
+        $this->functions[] = $function;
     }
 }

@@ -1,29 +1,24 @@
 <?php
 namespace PDoc\NodeParsers;
 
-use \ast\Node;
-
 use \PDoc\ASTFinder;
 use \PDoc\DocCommentParser;
+use \PDoc\ParseContext;
+use \PDoc\SourceLocation;
 
 abstract class AbstractNodeParser
 {
     protected $filePath;
     protected $astFinder;
     protected $docCommentParser;
-    public function __construct(string $filePath)
+    public function __construct()
     {
-        $this->filePath = $filePath;
         $this->astFinder = new ASTFinder();
         $this->docCommentParser = new DocCommentParser();
     }
-    public function parse(Node $node)
+    public function parseDocComment(string $docComment, ParseContext $ctx, SourceLocation $sourceLoc)
     {
-        throw new \Exception('::parse not implemented on ' . get_class($this));
-    }
-    public function parseDocComment(string $docComment)
-    {
-        return $this->docCommentParser->parse($docComment);
+        return $this->docCommentParser->parse($docComment, $ctx, $sourceLoc);
     }
     public function injectASTFinder($astFinder)
     {

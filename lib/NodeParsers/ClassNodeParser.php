@@ -4,27 +4,28 @@ namespace PDoc\NodeParsers;
 use \ast\Node;
 
 use \PDoc\Entities\PHPClass;
+use \PDoc\ParseContext;
 use \PDoc\SourceLocation;
 
 class ClassNodeParser extends AbstractNodeParser
 {
     protected $propertyNodeParser;
     protected $methodNodeParser;
-    public function __construct(string $filePath)
+    public function __construct()
     {
-        parent::__construct($filePath);
-        $this->propertyNodeParser = new PropertyNodeParser($filePath);
-        $this->methodNodeParser = new MethodNodeParser($filePath);
+        parent::__construct();
+        $this->propertyNodeParser = new PropertyNodeParser();
+        $this->methodNodeParser = new MethodNodeParser();
     }
-    public function parse(Node $node): PHPClass
+    public function parse(Node $node, ParseContext $ctx): PHPClass
     {
-        $sourceLoc = new SourceLocation($this->filePath, $node->lineno);
+        $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
 
-        $properties = $this->astFinder->parseWith($node, \ast\AST_PROP_ELEM, $this->propertyNodeParser);
-        $methods = $this->astFinder->parseWith($node, \ast\AST_METHOD, $this->methodNodeParser);
+        $properties = $this->astFinder->parseWith($node, $ctx, \ast\AST_PROP_ELEM, $this->propertyNodeParser);
+        $methods = $this->astFinder->parseWith($node, $ctx, \ast\AST_METHOD, $this->methodNodeParser);
 
         $docComment = $node->children['docComment'] ?? '';
-        $docBlock = $this->parseDocComment($docComment);
+        $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
 
         $class = new PHPClass($node->children['name'], $sourceLoc, $docBlock, $methods, $properties);
 

@@ -1,0 +1,144 @@
+<html>
+    <head>
+		<style>
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+		html {
+			height: 100%;
+		}
+		body {
+			min-height: 100%;
+		}
+		*, html {
+			padding: 0;
+			margin: 0;
+		}
+		p {
+			margin: 1em 0 1em 0;
+		}
+		.description {
+			max-width: 800px;
+		}
+		.container {
+			font-family: 'Roboto', sans-serif;
+			display: grid;
+			grid-template-columns: 200px auto;
+			grid-template-rows: 1fr;
+			min-height: 100%;
+		}
+		#sidebar {
+			grid-column-start: 1;
+			grid-column-end: 1;
+			grid-row-start: 1;
+			grid-row-end: 1;
+			background-color: #41464c;
+		}
+		#classlist {
+			list-style-type: none;
+			padding: 5px;
+		}
+		#classlist li {
+			padding: 5px;
+		}
+		#classlist li a {
+			text-decoration: none;
+			color: white;
+		}
+		#main {
+			padding: 10px;
+			grid-column-start: 2;
+			grid-column-end: 2;
+			grid-row-start: 1;
+			grid-row-end: 1;
+		}
+		#grid {
+			display: grid;
+			grid-template-columns: auto 1fr;
+		}
+		#grid .h2 {
+			grid-column: span 2;
+			font-size: 25px;
+			padding: 20px;
+		}
+		.property_type, .method_return_type {
+			grid-row: span 3;
+			justify-self: end;
+			padding-right: 5px;
+			color: #384838;
+			grid-column: 1;
+		}
+		.property_name, .method_name {
+			justify-self: start;
+			margin-left: 5px;
+			color: #18184c;
+			grid-column: 2;
+		}
+		.property_short_description, .method_short_description, .property_long_description, .method_long_description, .property_description, .method_description {
+			justify-self: start;
+			padding: 0px 0 0px 25px;
+			margin: 0;
+			grid-column: 2;
+		}
+		#methods {
+			display: grid;
+			grid-template-columns: minmax(100px, auto) 1fr;
+		}
+		.parameter_type {
+			color: #384838;
+		}
+		.parameter_name {
+		}
+		</style>
+		<script type="text/javascript" src="./classlist.js"></script>
+    </head>
+    <body style="margin: 0; padding: 0;">
+    	<div class="container">
+			<div id="sidebar">
+				<ul id="classlist">
+				</ul>
+			</div>
+			<div id="main">
+				<h1>{{ class.name }}</h1>
+
+				<div id="shortdescription" class="description">{{ class.shortDescription }}</div>
+
+				<div id="longdescription" class="description">{{ class.longDescription | markdown }}</div>
+
+				<div id="grid">
+					<span class="h2">Fields</span>
+					{% for property in class.properties %}
+					<div class="property_type">{{ property.type }}</div>
+					<div class="property_name">{{ property.name }}</div>
+					<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
+					{% endfor %}
+
+					<span class="h2">Constructor</span>
+					<div class="method_return_type"></div>
+					<div class="method_name">__construct({% for param in class.constructor.parameters %}<span class="parameter_type">{{ param.type }}</span>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})</div>
+					<div class="method_description">
+					{{ class.constructor.shortDescription | markdown }}
+					{{ class.constructor.longDescription | markdown }}
+					</div>
+
+					<span class="h2">Methods</span>
+					{% for method in class.methods %}
+					<div class="method_return_type">{{ method.returnType }}</div>
+					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type }}</span>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})</div>
+					<div class="method_description">
+					{{ method.shortDescription | markdown }}
+					{{ method.longDescription | markdown }}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var ul = document.getElementById('classlist');
+			for (fileName in classList) {
+				var cls = classList[fileName];
+				ul.innerHTML += '<li><a href="' + fileName + '">' + cls.name + '</a></li>';
+			}
+		</script>
+    </body>
+</html>
