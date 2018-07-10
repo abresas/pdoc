@@ -20,7 +20,7 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
         }
         parent::__construct('function', $name, $loc, $docBlock);
     }
-    public function handleParamTag(ParamTag $paramTag)
+    public function handleParamTag(ParamTag $paramTag): void
     {
         if (!isset($this->parameters[$paramTag->variable])) {
             throw new \Exception('Found @param tag for ' . $paramTag->variable . ', but there is no such parameter.');
@@ -29,7 +29,7 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
         $param->type = $paramTag->type;
         $param->description = $paramTag->description;
     }
-    public function handleReturnTag(ReturnTag $returnTag)
+    public function handleReturnTag(ReturnTag $returnTag): void
     {
         $this->returnType = $returnTag->type;
         $this->returnDescription = $returnTag->description;

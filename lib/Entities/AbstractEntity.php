@@ -55,9 +55,8 @@ abstract class AbstractEntity
     /**
      * Change attributes of this symbol according to documentation.
      * @param DocBlock $docBlock The parsed phpDoc comment block.
-     * @return null
      */
-    public function setDocBlock(DocBlock $docBlock)
+    public function setDocBlock(DocBlock $docBlock): void
     {
         $this->docBlock = $docBlock;
         $this->shortDescription = $docBlock->getShortDescription();
@@ -70,16 +69,15 @@ abstract class AbstractEntity
      * Log that an unexpected tag was found (ie, a handle*Tag method was not overloaded, and was called).
      * @param string $tag The tag type, including the initial "@" symbol, ie "@param"
      */
-    protected function logUnexpectedTag($tag)
+    protected function logUnexpectedTag($tag): void
     {
         error_log($this->sourceLocation . ': Unexpected ' . $tag . ' tag on ' . $this->entityType . ' "' . $this->name . '".');
     }
     /**
      * Handle a param tag, logs an error if not overloaded.
      * @param ParamTag $paramTag The @param tag that was found.
-     * @return null
      */
-    public function handleParamTag(ParamTag $paramTag)
+    public function handleParamTag(ParamTag $paramTag): void
     {
         $this->logUnexpectedTag('@param');
     }
@@ -87,7 +85,7 @@ abstract class AbstractEntity
      * Handle a var tag, logs an error if not overloaded.
      * @param VarTag $varTag The @var tag.
      */
-    public function handleVarTag(VarTag $varTag)
+    public function handleVarTag(VarTag $varTag): void
     {
         $this->logUnexpectedTag('@var');
     }
@@ -95,7 +93,7 @@ abstract class AbstractEntity
      * Handle a return tag, logs an error if not overloaded.
      * @param ReturnTag $returnTag The @return tag.
      */
-    public function handleReturnTag(ReturnTag $returnTag)
+    public function handleReturnTag(ReturnTag $returnTag): void
     {
         $this->logUnexpectedTag('@return');
     }

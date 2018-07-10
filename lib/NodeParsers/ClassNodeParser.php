@@ -9,19 +9,24 @@ use \PDoc\SourceLocation;
 
 class ClassNodeParser extends AbstractNodeParser
 {
-    protected $propertyNodeParser;
+    protected $propertyDeclarationNodeParser;
     protected $methodNodeParser;
     public function __construct()
     {
         parent::__construct();
-        $this->propertyNodeParser = new PropertyNodeParser();
+        $this->propertyDeclarationNodeParser = new PropertyDeclarationNodeParser();
         $this->methodNodeParser = new MethodNodeParser();
     }
     public function parse(Node $node, ParseContext $ctx): PHPClass
     {
         $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
+        var_dump("parsing " . $node->children['name']);
 
-        $properties = $this->astFinder->parseWith($node, $ctx, \ast\AST_PROP_ELEM, $this->propertyNodeParser);
+        $propertiesPerDecl = $this->astFinder->parseWith($node, $ctx, \ast\AST_PROP_DECL, $this->propertyDeclarationNodeParser);
+        $properties = [];
+        foreach ($propertiesPerDecl as $declProperties) {
+            $properties = array_merge($properties, $declProperties);
+        }
         $methods = $this->astFinder->parseWith($node, $ctx, \ast\AST_METHOD, $this->methodNodeParser);
 
         $docComment = $node->children['docComment'] ?? '';
@@ -31,9 +36,9 @@ class ClassNodeParser extends AbstractNodeParser
 
         return $class;
     }
-    public function injectPropertyNodeParser($nodeParser)
+    public function injectPropertyDeclarationNodeParser($nodeParser)
     {
-        $this->propertyNodeParser = $nodeParser;
+        $this->propertyDeclarationNodeParser = $nodeParser;
     }
     public function injectMethodNodeParser($nodeParser)
     {

@@ -10,7 +10,6 @@ class DirectoryScanner
         $files = new \RegexIterator($ite, $pattern, \RegexIterator::GET_MATCH);
         $fileList = [];
         foreach ($files as $file) {
-            var_dump('file', $file);
             $fileList = array_merge($fileList, $file);
         }
         return $fileList;

@@ -3,6 +3,7 @@ namespace PDoc\Entities;
 
 use \PDoc\DocBlock;
 use \PDoc\SourceLocation;
+use \PDoc\Types\VoidType;
 
 class PHPClass extends AbstractEntity implements \JsonSerializable
 {
@@ -14,7 +15,7 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
     {
         $this->properties = $properties;
         // initialize constructor in case it is not defined
-        $this->constructor = new PHPMethod('__construct', $loc, new DocBlock('', '', []));
+        $this->constructor = new PHPMethod('__construct', $loc, new DocBlock('', '', []), new VoidType(), 'public', false, false, false);
 
         foreach ($methods as $method) {
             if ($method->name === '__construct') {

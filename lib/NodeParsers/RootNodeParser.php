@@ -13,6 +13,7 @@ class RootNodeParser extends AbstractNodeParser
     protected $classNodeParser;
     protected $functionNodeParser;
     protected $namespaceNodeParser;
+    protected $useNodeParser;
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class RootNodeParser extends AbstractNodeParser
         $this->classNodeParser = new ClassNodeParser();
         $this->functionNodeParser = new FunctionNodeParser();
         $this->namespaceNodeParser = new NamespaceNodeParser();
+        $this->useNodeParser = new UseNodeParser();
     }
     public function parse(Node $node, string $filePath): FileParseResult
     {
@@ -32,6 +34,8 @@ class RootNodeParser extends AbstractNodeParser
         }
 
         $ctx = new ParseContext($filePath, $namespace);
+
+        $ctx->addAliases($this->astFinder->parseWith($node, $ctx, \ast\AST_USE_ELEM, $this->useNodeParser));
 
         $classes = $this->astFinder->parseWith($node, $ctx, \ast\AST_CLASS, $this->classNodeParser);
 

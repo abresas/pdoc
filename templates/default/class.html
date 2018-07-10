@@ -107,14 +107,26 @@
 					<span class="h2">Fields</span>
 					{% for property in class.properties %}
 					<div class="property_type">{{ property.type }}</div>
-					<div class="property_name">{{ property.name }}</div>
+					<div class="property_name">{{ property.name }}
+					{{ property.visibility }}
+					{% if property.isStatic %}
+					static
+					{% endif %}
+					{% if property.isAbstract %}
+					abstract
+					{% endif %}
+					{% if property.isFinal %}
+					final
+					{% endif %}
+					</div>
 					<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
 					{% endfor %}
 
 					<span class="h2">Constructor</span>
 					<div class="method_return_type"></div>
 					<div class="method_name">__construct({% for param in class.constructor.parameters %}<span class="parameter_type">{{ param.type }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})</div>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
+					</div>
 					<div class="method_description">
 					{{ class.constructor.shortDescription | markdown }}
 					{{ class.constructor.longDescription | markdown }}
@@ -122,9 +134,20 @@
 
 					<span class="h2">Methods</span>
 					{% for method in class.methods %}
-					<div class="method_return_type">{{ method.returnType }}</div>
+					<div class="method_return_type"><a href="{{ method.returnType.URL(base) }}">{{ method.returnType }}</a></div>
 					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})</div>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
+					{{ method.visibility }}
+					{% if method.isStatic %}
+					static
+					{% endif %}
+					{% if method.isAbstract %}
+					abstract
+					{% endif %}
+					{% if method.isFinal %}
+					final
+					{% endif %}
+					</div>
 					<div class="method_description">
 					{{ method.shortDescription | markdown }}
 					{{ method.longDescription | markdown }}

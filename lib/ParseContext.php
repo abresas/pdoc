@@ -2,26 +2,38 @@
 namespace PDoc;
 
 use \PDoc\Entities\PHPNamespace;
+use \PDoc\Entities\UseAlias;
 
 class ParseContext
 {
     public $filePath;
     public $namespace;
-    public $aliases;
-    public function __construct(string $filePath, PHPNamespace $namespace, array $aliases = [])
+    public $aliases = [];
+    public $astFlags;
+    public function __construct(string $filePath, PHPNamespace $namespace, array $aliases = [], $astFlags = 0)
     {
         $this->filePath = $filePath;
         $this->namespace = $namespace;
-        $this->aliases = $aliases;
+        $this->addAliases($aliases);
+        $this->astFlags = $astFlags;
     }
-    public function addAlias($qualifiedName, $fullName)
+    public function addAlias(UseAlias $alias)
     {
-        $this->aliases[$qualifiedName] = $fullName;
+        $this->aliases[$alias->alias] = $alias;
     }
-    public function resolve($name)
+    public function addAliases(array $aliases)
     {
+        foreach ($aliases as $alias) {
+            $this->addAlias($alias);
+        }
+    }
+    public function resolve(string $name): string
+    {
+        var_dump('resolve', $name, $this->aliases);
         if (isset($this->aliases[$name])) {
-            return $this->aliases[$name];
+            return $this->aliases[$name]->name;
+        } else if ($name[0] !== '\\') {
+            return $this->namespace->name . '\\' . $name;
         } else {
             return $name;
         }
