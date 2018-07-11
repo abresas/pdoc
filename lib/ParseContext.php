@@ -29,11 +29,10 @@ class ParseContext
     }
     public function resolve(string $name): string
     {
-        var_dump('resolve', $name, $this->aliases);
         if (isset($this->aliases[$name])) {
             return $this->aliases[$name]->name;
         } else if ($name[0] !== '\\') {
-            return $this->namespace->name . '\\' . $name;
+            return '\\' . $this->namespace->name . '\\' . $name;
         } else {
             return $name;
         }

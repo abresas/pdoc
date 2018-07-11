@@ -1,27 +1,22 @@
 <?php
 namespace PDoc;
 
+/**
+ * A parsed block of phpDoc documentation.
+ */
 class DocBlock
 {
-    private $shortDescription;
-    private $longDescription;
-    private $tags;
-    public function __construct($shortDescription, $longDescription, $tags)
+    /** @var string $shortDescription */
+    public $shortDescription;
+    /** @var string $longDescription */
+    public $longDescription;
+    /** @var \PDoc\Tags\AbstractTag[] $tags */
+    public $tags;
+
+    public function __construct(string $shortDescription, string $longDescription, array $tags)
     {
         $this->shortDescription = $shortDescription;
         $this->longDescription = $longDescription;
         $this->tags = $tags;
-    }
-    public function getShortDescription()
-    {
-        return $this->shortDescription;
-    }
-    public function getLongDescription()
-    {
-        return $this->longDescription;
-    }
-    public function getTags()
-    {
-        return $this->tags;
     }
 }

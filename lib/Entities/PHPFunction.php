@@ -6,13 +6,26 @@ use \PDoc\SourceLocation;
 use \PDoc\Tags\ParamTag;
 use \PDoc\Tags\ReturnTag;
 
+/**
+ * Definition of non-class functions (class methods treated as PHPMethod).
+ *
+ * A function has documentation, some parameters, and return type and description.
+ */
 class PHPFunction extends AbstractEntity implements \JsonSerializable
 {
     /** @var PHPParameter[] $parameters */
     public $parameters = [];
+    /** @var \PDoc\Types\AbstractType $returnType */
     public $returnType = 'any';
+    /** @var string $returnDescription */
     public $returnDescription = '';
 
+    /**
+     * @param string $name
+     * @param SourceLocation $loc
+     * @param DocBlock $docBlock
+     * @param PHPParameter[] $parameters
+     */
     public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock, $parameters = [])
     {
         foreach ($parameters as $parameter) {
@@ -20,6 +33,9 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
         }
         parent::__construct('function', $name, $loc, $docBlock);
     }
+    /**
+     * @param ParamTag $paramTag
+     */
     public function handleParamTag(ParamTag $paramTag): void
     {
         if (!isset($this->parameters[$paramTag->variable])) {
@@ -29,11 +45,20 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
         $param->type = $paramTag->type;
         $param->description = $paramTag->description;
     }
+    /**
+     * Set return type and description based on documentation.
+     *
+     * This discards return types deduced from typehints,
+     * or previous calls to this method.
+     */
     public function handleReturnTag(ReturnTag $returnTag): void
     {
         $this->returnType = $returnTag->type;
         $this->returnDescription = $returnTag->description;
     }
+    /**
+     * Implementation of \JsonSerializable interface
+     */
     public function jsonSerialize(): array
     {
         return [

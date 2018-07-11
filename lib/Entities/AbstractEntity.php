@@ -59,9 +59,9 @@ abstract class AbstractEntity
     public function setDocBlock(DocBlock $docBlock): void
     {
         $this->docBlock = $docBlock;
-        $this->shortDescription = $docBlock->getShortDescription();
-        $this->longDescription = $docBlock->getLongDescription();
-        foreach ($docBlock->getTags() as $tag) {
+        $this->shortDescription = $docBlock->shortDescription;
+        $this->longDescription = $docBlock->longDescription;
+        foreach ($docBlock->tags as $tag) {
             $tag->handledBy($this);
         }
     }

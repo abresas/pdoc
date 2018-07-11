@@ -7,12 +7,20 @@ class ArrayType extends AbstractType
     {
         $this->elementType = $t;
     }
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->elementType instanceof AnyType) {
             return 'array';
         } else {
             return $this->elementType . '[]';
+        }
+    }
+    public function getLink(): string
+    {
+        if ($this->elementType instanceof AnyType) {
+            return 'array';
+        } else {
+            return $this->elementType->getLink() . '[]';
         }
     }
 }

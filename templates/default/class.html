@@ -106,7 +106,7 @@
 				<div id="grid">
 					<span class="h2">Fields</span>
 					{% for property in class.properties %}
-					<div class="property_type">{{ property.type }}</div>
+					<div class="property_type">{{ property.type.Link | raw }}</div>
 					<div class="property_name">{{ property.name }}
 					{{ property.visibility }}
 					{% if property.isStatic %}
@@ -124,7 +124,7 @@
 
 					<span class="h2">Constructor</span>
 					<div class="method_return_type"></div>
-					<div class="method_name">__construct({% for param in class.constructor.parameters %}<span class="parameter_type">{{ param.type }}</span>
+					<div class="method_name">__construct({% for param in class.constructor.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
 					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
 					</div>
 					<div class="method_description">
@@ -134,8 +134,8 @@
 
 					<span class="h2">Methods</span>
 					{% for method in class.methods %}
-					<div class="method_return_type"><a href="{{ method.returnType.URL(base) }}">{{ method.returnType }}</a></div>
-					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type }}</span>
+					<div class="method_return_type">{{ method.returnType.Link | raw }}</div>
+					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
 					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
 					{{ method.visibility }}
 					{% if method.isStatic %}

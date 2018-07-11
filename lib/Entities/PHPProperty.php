@@ -4,17 +4,20 @@ namespace PDoc\Entities;
 use \PDoc\DocBlock;
 use \PDoc\SourceLocation;
 use \PDoc\Tags\VarTag;
+use \PDoc\Types\AnyType;
 
 class PHPProperty extends AbstractEntity implements \JsonSerializable
 {
-    public $type;
+    public $type = null;
     public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock, string $visibility, bool $isStatic, bool $isFinal, bool $isAbstract)
     {
         parent::__construct('property', $name, $loc, $docBlock);
+        $this->type = new AnyType();
         $this->visibility = $visibility;
         $this->isStatic = $isStatic;
         $this->isAbstract = $isAbstract;
         $this->isFinal = $isFinal;
+        $this->setDocBlock($docBlock);
     }
     public function jsonSerialize(): array
     {

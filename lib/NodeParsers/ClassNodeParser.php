@@ -20,7 +20,6 @@ class ClassNodeParser extends AbstractNodeParser
     public function parse(Node $node, ParseContext $ctx): PHPClass
     {
         $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
-        var_dump("parsing " . $node->children['name']);
 
         $propertiesPerDecl = $this->astFinder->parseWith($node, $ctx, \ast\AST_PROP_DECL, $this->propertyDeclarationNodeParser);
         $properties = [];

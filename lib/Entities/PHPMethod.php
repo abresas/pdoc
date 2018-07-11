@@ -9,9 +9,11 @@ use \PDoc\Types\AbstractType;
 
 class PHPMethod extends AbstractEntity implements \JsonSerializable
 {
-    /** @var PHPParameter[] $parameters */
+    /** @var AbstractType $returnType */
     public $returnType;
+    /** @var PHPParameter[] $parameters */
     public $parameters = [];
+    /** @var string $returnDescription */
     public $returnDescription = '';
 
     public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock, AbstractType $returnType, string $visibility, bool $isStatic, bool $isAbstract, bool $isFinal, array $parameters = [])
@@ -38,7 +40,7 @@ class PHPMethod extends AbstractEntity implements \JsonSerializable
     }
     public function handleReturnTag(ReturnTag $returnTag): void
     {
-        //$this->returnType = $returnTag->type;
+        $this->returnType = $returnTag->type;
         $this->returnDescription = $returnTag->description;
     }
     public function jsonSerialize(): array

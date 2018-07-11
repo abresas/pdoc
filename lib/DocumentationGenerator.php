@@ -17,7 +17,7 @@ class DocumentationGenerator
         $this->rootNodeParser = new RootNodeParser();
         $this->directoryScanner = new DirectoryScanner();
     }
-    public function parseDirectory($sourceDir)
+    public function parseDirectory($sourceDir): array
     {
         $files = $this->directoryScanner->scan($sourceDir, '/^.*\.php$/');
 
@@ -43,15 +43,15 @@ class DocumentationGenerator
 
         return $namespaces;
     }
-    public function injectASTParser($astParser)
+    public function injectASTParser($astParser): void
     {
         $this->astParser = $astParser;
     }
-    public function injectRootNodeParser($parser)
+    public function injectRootNodeParser($parser): void
     {
         $this->rootNodeParser = $parser;
     }
-    public function injectDirectoryScanner($dirScanner)
+    public function injectDirectoryScanner($dirScanner): void
     {
         $this->directoryScanner = $dirScanner;
     }
