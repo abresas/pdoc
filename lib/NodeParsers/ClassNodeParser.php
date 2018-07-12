@@ -37,7 +37,11 @@ class ClassNodeParser extends AbstractNodeParser
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
 
         $name = $node->children['name'];
-        $extends = $node->children['extends']->children['name'] ?? null;
+        if (isset($node->children['extends'])) {
+            $extends = $ctx->resolve($node->children['extends']->children['name']);
+        } else {
+            $extends = null;
+        }
         $class = new PHPClass($name, $extends, $sourceLoc, $docBlock, $methods, $properties);
 
         return $class;

@@ -33,6 +33,7 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
      */
     public function __construct(string $name, ?string $extends, SourceLocation $loc, DocBlock $docBlock, $methods = [], $properties = [])
     {
+        $this->name = $name;
         $this->extends = $extends;
         $this->constructor = null;
 
@@ -63,16 +64,36 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
             return new PHPMethod('__construct', $this->sourceLocation, new DocBlock('', '', []), new VoidType(), 'public', false, false, false);
         }
     }
+    /**
+     * Get methods including inherited
+     */
     public function getAllMethods(): array
     {
         $methods = array_merge($this->methods, $this->parentClass ? $this->parentClass->getAllMethods() : []);
-        ksort($methods);
+        uasort($methods, function (PHPMethod $m1, PHPMethod $m2) {
+            if ($m1->visibility !== $m2->visibility) {
+                // "public", "protected", "private" happen to be reversely sorted lexicographically
+                return ($m1->visibility < $m2->visibility) ? 1 : -1;
+            }
+            assert($m1->name !== $m2->name); // array_merge should keep only unique method names
+            return ($m1->name < $m2->name) ?  -1 : 1;
+        });
         return $methods;
     }
+    /**
+     * Get properties including inherited
+     */
     public function getAllProperties(): array
     {
         $props = array_merge($this->properties, $this->parentClass ? $this->parentClass->getAllProperties() : []);
-        ksort($props);
+        uasort($props, function (PHPProperty $p1, PHPProperty $p2) {
+            if ($p1->visibility !== $p2->visibility) {
+                // "public", "protected", "private" happen to be reversely sorted lexicographically
+                return ($p1->visibility < $p2->visibility) ? 1 : -1;
+            }
+            assert($p1->name !== $p2->name); // array_merge should keep only unique method names
+            return ($p1->name < $p2->name) ?  -1 : 1;
+        });
         return $props;
     }
     /**

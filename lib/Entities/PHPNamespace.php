@@ -4,6 +4,7 @@ namespace PDoc\Entities;
 use \PDoc\DocBlock;
 use \PDoc\Entities\PHPClass;
 use \PDoc\Entities\PHPFunction;
+use \PDoc\NodeParsers\FileParseResult;
 use \PDoc\SourceLocation;
 
 class PHPNamespace extends AbstractEntity implements \JsonSerializable
@@ -48,5 +49,14 @@ class PHPNamespace extends AbstractEntity implements \JsonSerializable
     public function addFunction(PHPFunction $function)
     {
         $this->functions[$function->name] = $function;
+    }
+    public function addSymbols(FileParseResult $symbols)
+    {
+        foreach ($symbols->classes as $class) {
+            $this->addClass($class);
+        }
+        foreach ($symbols->functions as $function) {
+            $this->addFunction($function);
+        }
     }
 }

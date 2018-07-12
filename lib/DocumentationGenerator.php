@@ -39,24 +39,22 @@ class DocumentationGenerator
             $ctx = new ParseContext($filePath, $namespace);
             $symbols = $this->rootNodeParser->parse($root, $ctx);
             $newNamespace = $symbols->namespace;
-
-            if (isset($namespaces[$newNamespace->name])) {
-                $namespace = $namespaces[$newNamespace->name];
-            } else {
-                $namespaces[$newNamespace->name] = $namespace = $newNamespace;
-            }
-
-            foreach ($symbols->classes as $class) {
-                $namespace->addClass($class);
-            }
-            foreach ($symbols->functions as $function) {
-                $namespace->addFunction($function);
-            }
+            $namespace = $namespaces[$newNamespace->name] ?? $newNamespace;
+            $namespaces[$namespace->name] = $namespace;
+            $namespace->addSymbols($symbols);
         }
+        var_dump($namespaces);
         foreach ($namespaces as $namespace) {
             foreach ($namespace->classes as $class) {
-                if (!is_null($class->extends) && isset($namespace->classes[$class->extends])) {
-                    $class->parentClass = $namespace->classes[$class->extends];
+                if (is_null($class->extends)) {
+                    continue;
+                }
+                $parentNameParts = explode("\\", $class->extends);
+                $parentNamespace = substr(join("\\", array_slice($parentNameParts, 0, -1)), 1);
+                $parentName = $parentNameParts[count($parentNameParts) - 1];
+
+                if (!is_null($class->extends) && isset($namespaces[$parentNamespace]->classes[$parentName])) {
+                    $class->parentClass = $namespaces[$parentNamespace]->classes[$parentName];
                 }
             }
         }
