@@ -16,6 +16,10 @@ abstract class AbstractNodeParser
         $this->astFinder = new ASTFinder();
         $this->docCommentParser = new DocCommentParser();
     }
+    public function parse(\ast\Node $node, ParseContext $ctx)
+    {
+        throw new Exception('Not implemented');
+    }
     public function parseDocComment(string $docComment, ParseContext $ctx, SourceLocation $sourceLoc)
     {
         return $this->docCommentParser->parse($docComment, $ctx, $sourceLoc);

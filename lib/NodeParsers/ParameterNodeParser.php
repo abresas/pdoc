@@ -10,6 +10,8 @@ use \PDoc\Types\AnyType;
 
 class ParameterNodeParser extends AbstractNodeParser
 {
+    /** @var TypeNodeParser $typeNodeParser */
+    private $typeNodeParser;
     public function __construct()
     {
         $this->typeNodeParser = new TypeNodeParser();

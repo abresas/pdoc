@@ -10,11 +10,10 @@ use \PDoc\SourceLocation;
 
 class NamespaceNodeParser extends AbstractNodeParser
 {
-    public function parse(Node $node, string $filePath): PHPNamespace
+    public function parse(Node $node, ParseContext $ctx)
     {
-        $sourceLoc = new SourceLocation($filePath, $node->lineno);
         $docComment = $node->children['docComment'] ?? '';
-        $ctx = new ParseContext($filePath, new PHPNamespace('Global', $sourceLoc, new DocBlock('', '', [])));
+        $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
         return new PHPNameSpace($node->children['name'], $sourceLoc, $docBlock);
     }

@@ -1,8 +1,19 @@
 <?php
 namespace PDoc\Types;
 
+/**
+ * A type for instances of a certain class.
+ *
+ * This class captures both the fully namespaced name of the class,
+ * and the aliased name that was used in the source file it was found.
+ *
+ * ObjectType is used for objects whose class is unknown, and corresponds
+ * to "object" typehint in PHP.
+ */
 class ClassType extends AbstractType
 {
+    private $qualifiedName;
+    private $fullName;
     public function __construct($qualifiedName, $fullName)
     {
         $this->qualifiedName = $qualifiedName;

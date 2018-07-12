@@ -9,10 +9,11 @@ use \PDoc\ParseContext;
  */
 class TypeFactory
 {
+
     public function fromDocumentationString(string $typeStr, ParseContext $ctx): AbstractType
     {
         if (strpos($typeStr, '|') !== false) {
-            $subTypes = array_map(function ($s) {
+            $subTypes = array_map(function ($s) use ($ctx) {
                 return $this->fromDocumentationString($s, $ctx);
             }, explode('|', $typeStr));
             return new UnionType($subTypes);

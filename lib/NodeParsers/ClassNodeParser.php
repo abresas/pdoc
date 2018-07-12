@@ -17,7 +17,12 @@ class ClassNodeParser extends AbstractNodeParser
         $this->propertyDeclarationNodeParser = new PropertyDeclarationNodeParser();
         $this->methodNodeParser = new MethodNodeParser();
     }
-    public function parse(Node $node, ParseContext $ctx): PHPClass
+    /**
+     * @param Node $node
+     * @param ParseContext $ctx
+     * @return PHPClass
+     */
+    public function parse(Node $node, ParseContext $ctx)
     {
         $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
 
@@ -31,15 +36,23 @@ class ClassNodeParser extends AbstractNodeParser
         $docComment = $node->children['docComment'] ?? '';
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
 
-        $class = new PHPClass($node->children['name'], $sourceLoc, $docBlock, $methods, $properties);
+        $name = $node->children['name'];
+        $extends = $node->children['extends']->children['name'] ?? null;
+        $class = new PHPClass($name, $extends, $sourceLoc, $docBlock, $methods, $properties);
 
         return $class;
     }
-    public function injectPropertyDeclarationNodeParser($nodeParser)
+    /**
+     * @param PropertyDeclarationNodeParser $nodeParser
+     */
+    public function injectPropertyDeclarationNodeParser($nodeParser): void
     {
         $this->propertyDeclarationNodeParser = $nodeParser;
     }
-    public function injectMethodNodeParser($nodeParser)
+    /**
+     * @param MethodNodeParser $nodeParser
+     */
+    public function injectMethodNodeParser($nodeParser): void
     {
         $this->methodNodeParser = $nodeParser;
     }

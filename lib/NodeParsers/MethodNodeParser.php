@@ -8,16 +8,27 @@ use \PDoc\ParseContext;
 use \PDoc\SourceLocation;
 use \PDoc\Types\AnyType;
 
+/**
+ * Parse a methods of a class to calculate attributes useful for documentation.
+ */
 class MethodNodeParser extends AbstractNodeParser
 {
-    protected $parameterNodeParser;
+    /** @var ParameterNodeParser $parameterNodeParser */
+    private $parameterNodeParser;
+    /** @var TypeNodeParser $typeNodeParser */
+    private $typeNodeParser;
     public function __construct()
     {
         parent::__construct();
         $this->parameterNodeParser = new ParameterNodeParser();
         $this->typeNodeParser = new TypeNodeParser();
     }
-    public function parse(Node $node, ParseContext $ctx): PHPMethod
+    /**
+     * @param Node $node
+     * @param ParseContext $ctx
+     * @return PHPMethod
+     */
+    public function parse(Node $node, ParseContext $ctx)
     {
         $parameters = $this->astFinder->parseWith($node, $ctx, \ast\AST_PARAM, $this->parameterNodeParser);
 
@@ -25,7 +36,7 @@ class MethodNodeParser extends AbstractNodeParser
         if (isset($node->children['returnType'])) {
             $returnType = $this->typeNodeParser->parse($node->children['returnType'], $ctx);
         } else {
-            $returnType = new AnyType($sourceLoc);
+            $returnType = new AnyType();
         }
 
         $docComment = $node->children['docComment'] ?? '';
@@ -40,9 +51,9 @@ class MethodNodeParser extends AbstractNodeParser
         } else {
             error_log($sourceLoc . ': Unexpected visibility on ' . $node->children['name']);
         }
-        $isStatic = $node->flags & \ast\flags\MODIFIER_STATIC;
-        $isAbstract = $node->flags & \ast\flags\MODIFIER_ABSTRACT;
-        $isFinal = $node->flags & \ast\flags\MODIFIER_FINAL;
+        $isStatic = (bool)($node->flags & \ast\flags\MODIFIER_STATIC);
+        $isAbstract = (bool)($node->flags & \ast\flags\MODIFIER_ABSTRACT);
+        $isFinal = (bool)($node->flags & \ast\flags\MODIFIER_FINAL);
         return new PHPMethod($node->children['name'], $sourceLoc, $docBlock, $returnType, $visibility, $isStatic, $isAbstract, $isFinal, $parameters);
     }
     public function injectParameterNodeParser()

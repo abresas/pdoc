@@ -15,6 +15,14 @@ class PHPMethod extends AbstractEntity implements \JsonSerializable
     public $parameters = [];
     /** @var string $returnDescription */
     public $returnDescription = '';
+    /** @var string $visibility */
+    public $visibility;
+    /** @var bool $isStatic */
+    public $isStatic;
+    /** @var bool $isAbstract */
+    public $isAbstract;
+    /** @var bool $isFinal */
+    public $isFinal;
 
     public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock, AbstractType $returnType, string $visibility, bool $isStatic, bool $isAbstract, bool $isFinal, array $parameters = [])
     {

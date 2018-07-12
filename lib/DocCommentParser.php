@@ -3,9 +3,18 @@ namespace PDoc;
 
 use PDoc\Tags\TagBuilder;
 
+/**
+ * Parse a phpDoc comment.
+ */
 class DocCommentParser
 {
-    public function parse(string $text, ParseContext $ctx, SourceLocation $sourceLoc)
+    /**
+     * @param string $text The doc comment text.
+     * @param ParseContext $ctx The context (known symbols etc) of the parser so far.
+     * @param SourceLoc $sourceLoc The location where the comment was found.
+     * @return DocBlock
+     */
+    public function parse(string $text, ParseContext $ctx, SourceLocation $sourceLoc): DocBlock
     {
         $m = [];
         $text = substr($text, 3, -2);
@@ -26,7 +35,15 @@ class DocCommentParser
 
         return new DocBlock($shortDescription, $longDescription, $tags);
     }
-    public function parseDescription(string $description)
+    /**
+     * Parse the description part of the comment.
+     *
+     * We identify description as the text before tags. Any text after or between
+     * lines starting with a tag is ignored.
+     * @param string $description The part of the comment before any tags.
+     * @return string[] Two strings, the short and long description.
+     */
+    public function parseDescription(string $description): array
     {
         $descriptionLines = explode("\n", $description);
         $shortDescription = $descriptionLines[0];
@@ -34,7 +51,14 @@ class DocCommentParser
 
         return [$shortDescription, $longDescription];
     }
-    public function parseTags(string $tagsStr, ParseContext $ctx, $sourceLoc)
+    /**
+     * Parse tags in a phpDoc comment.
+     * @param string $tagsStr The string containing all the lines with tags.
+     * @param ParseContext $ctx The context of the parser for shared memory.
+     * @param SourceLocation $sourceLoc The location in the source code where the tags were found.
+     * @return \PDoc\Tags\AbstractTag[]
+     */
+    public function parseTags(string $tagsStr, ParseContext $ctx, SourceLocation $sourceLoc): array
     {
         $tagLines = explode("\n", $tagsStr);
         $tags = [];

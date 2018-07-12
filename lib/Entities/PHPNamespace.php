@@ -8,8 +8,8 @@ use \PDoc\SourceLocation;
 
 class PHPNamespace extends AbstractEntity implements \JsonSerializable
 {
-    public $classes;
-    public $functions;
+    public $classes = [];
+    public $functions = [];
     public function __construct(
         string $name,
         SourceLocation $sourceLoc,
@@ -17,8 +17,8 @@ class PHPNamespace extends AbstractEntity implements \JsonSerializable
         $classes = [],
         $functions = []
     ) {
-        $this->classes = $classes;
-        $this->functions = $functions;
+        $this->addClasses($classes);
+        $this->addFunctions($functions);
         parent::__construct('namespace', $name, $sourceLoc, $docBlock);
     }
     public function jsonSerialize(): array
@@ -31,18 +31,22 @@ class PHPNamespace extends AbstractEntity implements \JsonSerializable
     }
     public function addClasses(array $classes)
     {
-        $this->classes = $classes;
+        foreach ($classes as $class) {
+            $this->addClass($class);
+        }
     }
     public function addClass(PHPClass $class)
     {
-        $this->classes[] = $class;
+        $this->classes[$class->name] = $class;
     }
     public function addFunctions(array $functions)
     {
-        $this->functions = $functions;
+        foreach ($functions as $func) {
+            $this->addFunction($func);
+        }
     }
     public function addFunction(PHPFunction $function)
     {
-        $this->functions[] = $function;
+        $this->functions[$function->name] = $function;
     }
 }

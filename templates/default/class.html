@@ -1,7 +1,10 @@
+<!DOCTYPE html>
 <html>
     <head>
-		<style>
 		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+		<style>
+
 		html {
 			height: 100%;
 		}
@@ -18,7 +21,7 @@
 		.description {
 			max-width: 800px;
 		}
-		.container {
+		.doc-container {
 			font-family: 'Roboto', sans-serif;
 			display: grid;
 			grid-template-columns: 200px auto;
@@ -30,7 +33,7 @@
 			grid-column-end: 1;
 			grid-row-start: 1;
 			grid-row-end: 1;
-			background-color: #41464c;
+			/* background-color: #41464c; */
 		}
 		#classlist {
 			list-style-type: none;
@@ -41,7 +44,7 @@
 		}
 		#classlist li a {
 			text-decoration: none;
-			color: white;
+			/* color: white; */
 		}
 		#main {
 			padding: 10px;
@@ -91,10 +94,10 @@
 		<script type="text/javascript" src="./classlist.js"></script>
     </head>
     <body style="margin: 0; padding: 0;">
-    	<div class="container">
+    	<div class="doc-container">
 			<div id="sidebar">
-				<ul id="classlist">
-				</ul>
+				<div id="classlist" role="tablist">
+				</div>
 			</div>
 			<div id="main">
 				<h1>{{ class.name }}</h1>
@@ -105,7 +108,7 @@
 
 				<div id="grid">
 					<span class="h2">Fields</span>
-					{% for property in class.properties %}
+					{% for property in class.AllProperties %}
 					<div class="property_type">{{ property.type.Link | raw }}</div>
 					<div class="property_name">{{ property.name }}
 					{{ property.visibility }}
@@ -124,16 +127,16 @@
 
 					<span class="h2">Constructor</span>
 					<div class="method_return_type"></div>
-					<div class="method_name">__construct({% for param in class.constructor.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
+					<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
 					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
 					</div>
 					<div class="method_description">
-					{{ class.constructor.shortDescription | markdown }}
-					{{ class.constructor.longDescription | markdown }}
+					{{ class.Constructor.shortDescription | markdown }}
+					{{ class.Constructor.longDescription | markdown }}
 					</div>
 
 					<span class="h2">Methods</span>
-					{% for method in class.methods %}
+					{% for method in class.AllMethods %}
 					<div class="method_return_type">{{ method.returnType.Link | raw }}</div>
 					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
 					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
@@ -156,11 +159,22 @@
 				</div>
 			</div>
 		</div>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 		<script type="text/javascript">
-			var ul = document.getElementById('classlist');
-			for (fileName in classList) {
-				var cls = classList[fileName];
-				ul.innerHTML += '<li><a href="' + fileName + '">' + cls.name + '</a></li>';
+			var node = document.getElementById('classlist');
+			namespaceNames = Object.keys(classList).sort();
+			for (i in namespaceNames) {
+				var namespaceName = namespaceNames[i];
+				var nsName = encodeURIComponent(namespaceName.replace('\\', ''));
+				var cardHtml = '<div class="xcard"><div class="xcard-header" role="tab"><a data-toggle="collapse" href="#ns-' + nsName + '" aria-expanded="false" aria-controls="#ns-' + nsName + '" class="collapsed">' + namespaceName + '</a></div><div id="ns-' + nsName + '" class="collapse"><ul>'
+				for (fileName in classList[namespaceName]) {
+					var cls = classList[namespaceName][fileName];
+					cardHtml += '<li><a href="' + fileName + '">' + cls.name + '</a></li>';
+				}
+				cardHtml += '</ul></div></div>';
+				node.innerHTML += cardHtml;
 			}
 		</script>
     </body>

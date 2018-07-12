@@ -8,6 +8,8 @@ use PDoc\Types\TypeFactory;
 
 class TagBuilder
 {
+    /** @var TypeFactory $typeFactory */
+    private $typeFactory;
     public function __construct()
     {
         $this->typeFactory = new TypeFactory();

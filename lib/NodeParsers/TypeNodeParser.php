@@ -13,16 +13,28 @@ use PDoc\Types\ClassType;
 use PDoc\Types\DoubleType;
 use PDoc\Types\IterableType;
 use PDoc\Types\LongType;
+use PDoc\Types\NullType;
 use PDoc\Types\ObjectType;
 use PDoc\Types\StringType;
+use PDoc\Types\UnionType;
 use PDoc\Types\VoidType;
 
+/**
+ * Parse an AST node that represents a typehint in function or method declarations.
+ */
 class TypeNodeParser
 {
+    /**
+     * @param Node $node
+     * @param ParseContext $ctx
+     * @return AbstractType
+     */
     public function parse(Node $node, ParseContext $ctx): AbstractType
     {
         if ($node->kind === \ast\AST_NAME) {
             return new ClassType($node->children['name'], $ctx->resolve($node->children['name']));
+        } elseif ($node->kind === \ast\AST_NULLABLE_TYPE) {
+            return new UnionType([ $this->parse($node->children['type'], $ctx), new NullType() ]);
         } elseif ($node->kind === \ast\AST_TYPE) {
             if ($node->flags === \ast\flags\TYPE_ARRAY) {
                 return new ArrayType(new AnyType());
@@ -43,10 +55,10 @@ class TypeNodeParser
             } elseif ($node->flags === \ast\flags\TYPE_OBJECT) {
                 return new ObjectType();
             } else {
-                throw new Exception('Unexpected AST_TYPE');
+                throw new \Exception($ctx->sourceLocation . ': Unexpected AST_TYPE: ' . $node->flags);
             }
         } else {
-            throw new Exception('Unexpected return type');
+            throw new \Exception($ctx->sourceLocation . ': Unexpected type node kind: ' . $node->kind);
         }
     }
 }

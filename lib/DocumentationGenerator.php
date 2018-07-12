@@ -1,30 +1,43 @@
 <?php
 namespace PDoc;
 
+use \PDoc\Entities\PHPNamespace;
 use \PDoc\FileSystem\DirectoryScanner;
 use \PDoc\NodeParsers\RootNodeParser;
 
+/**
+ * Main class. Parse a directory and generate documentation.
+ */
 class DocumentationGenerator
 {
+    /** @var ASTParser $astParser Parses PHP AST. */
     protected $astParser;
+    /** @var RootNodeParser $rootNodeParser Parses the root AST node of a .php file. */
     protected $rootNodeParser;
-    protected $classTemplate;
+    /** @var DirectoryScanner $directoryScanner An object that can scan directories to produce a list of files. */
     protected $directoryScanner;
-    protected $fileWriter;
     public function __construct()
     {
         $this->astParser = new ASTParser();
         $this->rootNodeParser = new RootNodeParser();
         $this->directoryScanner = new DirectoryScanner();
     }
-    public function parseDirectory($sourceDir): array
+    /**
+     * Parse source directory to generate documentation.
+     * @param string $sourceDir Path to the project source.
+     * @return \PDoc\Entities\PHPNamespace[]
+     */
+    public function parseDirectory(string $sourceDir): array
     {
         $files = $this->directoryScanner->scan($sourceDir, '/^.*\.php$/');
 
         $namespaces = [];
         foreach ($files as $filePath) {
             $root = $this->astParser->parseFile($filePath);
-            $symbols = $this->rootNodeParser->parse($root, $filePath);
+            $sourceLoc = new SourceLocation($filePath, $root->lineno);
+            $namespace = new PHPNamespace('Global', $sourceLoc, new DocBlock('', '', []));
+            $ctx = new ParseContext($filePath, $namespace);
+            $symbols = $this->rootNodeParser->parse($root, $ctx);
             $newNamespace = $symbols->namespace;
 
             if (isset($namespaces[$newNamespace->name])) {
@@ -38,6 +51,13 @@ class DocumentationGenerator
             }
             foreach ($symbols->functions as $function) {
                 $namespace->addFunction($function);
+            }
+        }
+        foreach ($namespaces as $namespace) {
+            foreach ($namespace->classes as $class) {
+                if (!is_null($class->extends) && isset($namespace->classes[$class->extends])) {
+                    $class->parentClass = $namespace->classes[$class->extends];
+                }
             }
         }
 

@@ -3,10 +3,7 @@ namespace PDoc\NodeParsers;
 
 use \ast\Node;
 
-use \PDoc\DocBlock;
-use \PDoc\Entities\PHPNamespace;
 use \PDoc\ParseContext;
-use \PDoc\SourceLocation;
 
 class RootNodeParser extends AbstractNodeParser
 {
@@ -23,17 +20,16 @@ class RootNodeParser extends AbstractNodeParser
         $this->namespaceNodeParser = new NamespaceNodeParser();
         $this->useNodeParser = new UseNodeParser();
     }
-    public function parse(Node $node, string $filePath): FileParseResult
+    /**
+     * @return FileParseResult
+     */
+    public function parse(Node $node, ParseContext $ctx)
     {
         $nsNode = $this->astFinder->firstOfKind($node, \ast\AST_NAMESPACE);
-        if (is_null($nsNode)) {
-            $sourceLoc = new SourceLocation($filePath, $node->lineno);
-            $namespace = new PHPNamespace('Global', $sourceLoc, new DocBlock('', '', []));
-        } else {
-            $namespace = $this->namespaceNodeParser->parse($nsNode, $filePath);
+        if (!is_null($nsNode)) {
+            $namespace = $this->namespaceNodeParser->parse($nsNode, $ctx);
+            $ctx->namespace = $namespace;
         }
-
-        $ctx = new ParseContext($filePath, $namespace);
 
         $ctx->addAliases($this->astFinder->parseWith($node, $ctx, \ast\AST_USE_ELEM, $this->useNodeParser));
 

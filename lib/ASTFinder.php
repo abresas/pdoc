@@ -50,7 +50,7 @@ class ASTFinder
                     $nodes[] = $node;
                 }
             }
-        }, []);
+        });
         return $nodes;
     }
     /**
@@ -58,8 +58,8 @@ class ASTFinder
      * @param Node $root The starting node.
      * @param ParseContext $ctx The context to pass to parser on each invokation.
      * @param int $kind Parse only nodes matching this kind.
-     * @param AbstractNodeParser The parser to use for parsing.
-     * @return AbstractEntity[] The results of parsing with the parser.
+     * @param AbstractNodeParser $parser The parser to use for parsing.
+     * @return \PDoc\Entities\AbstractEntity[] The results of parsing with the parser.
      */
     public function parseWith($root, ParseContext $ctx, int $kind, AbstractNodeParser $parser): array
     {
