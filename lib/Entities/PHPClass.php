@@ -15,6 +15,8 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
 {
     /** @var PHPMethod[] $methods The methods of the class (excluding constructor). */
     public $methods = [];
+    /** @var string $namespace Name of namespace this class belongs to. */
+    public $namespace;
     /** @var PHPProperty[] $properties The properties of the class. */
     public $properties = [];
     /** @var PHPMethod|null $constructor The constructor, an empty one assumed if not defined. */
@@ -31,9 +33,10 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
      * @param PHPMethod[] $methods Array of methods defined in the class.
      * @param PHPProperty[] $properties Array of properties defined in the class.
      */
-    public function __construct(string $name, ?string $extends, SourceLocation $loc, DocBlock $docBlock, $methods = [], $properties = [])
+    public function __construct(string $name, string $namespace, ?string $extends, SourceLocation $loc, DocBlock $docBlock, $methods = [], $properties = [])
     {
         $this->name = $name;
+        $this->namespace = $namespace;
         $this->extends = $extends;
         $this->constructor = null;
 
@@ -107,5 +110,9 @@ class PHPClass extends AbstractEntity implements \JsonSerializable
             'methods' => $this->methods,
             'properties' => $this->properties
         ];
+    }
+    public function getURI(): string
+    {
+        return urlencode(str_replace('\\', '.', $this->namespace . '\\' . $this->name)) . '.html';
     }
 }

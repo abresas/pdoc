@@ -1,0 +1,21 @@
+<div id="classlist" role="tablist">
+	<a href="index.html">Index</a>
+	{% for namespace in namespaces %}
+	<div class="xcard">
+		<div class="xcard-header" role="tab">
+			<a data-toggle="collapse"
+			   href="#ns-{{ namespace.URI }}"
+			   aria-expanded="false"
+			   aria-controls="#ns-{{ namespace.URI }}"
+			   class="collapsed">{{ namespace.name }}</a>
+		</div>
+		<div id="ns-{{ namespace.URI }}" class="collapse">
+			<ul>
+				{% for class in namespace.classes %}
+				<li><a href="{{ class.URI }}">{{ class.name }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{% endfor %}
+</div>

@@ -3,114 +3,26 @@
     <head>
 		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-		<style>
-
-		html {
-			height: 100%;
-		}
-		body {
-			min-height: 100%;
-		}
-		*, html {
-			padding: 0;
-			margin: 0;
-		}
-		p {
-			margin: 1em 0 1em 0;
-		}
-		.description {
-			max-width: 800px;
-		}
-		.doc-container {
-			font-family: 'Roboto', sans-serif;
-			display: grid;
-			grid-template-columns: 200px auto;
-			grid-template-rows: 1fr;
-			min-height: 100%;
-		}
-		#sidebar {
-			grid-column-start: 1;
-			grid-column-end: 1;
-			grid-row-start: 1;
-			grid-row-end: 1;
-			/* background-color: #41464c; */
-		}
-		#classlist {
-			list-style-type: none;
-			padding: 5px;
-		}
-		#classlist li {
-			padding: 5px;
-		}
-		#classlist li a {
-			text-decoration: none;
-			/* color: white; */
-		}
-		#main {
-			padding: 10px;
-			grid-column-start: 2;
-			grid-column-end: 2;
-			grid-row-start: 1;
-			grid-row-end: 1;
-		}
-		#grid {
-			display: grid;
-			grid-template-columns: auto 1fr;
-		}
-		#grid .h2 {
-			grid-column: span 2;
-			font-size: 25px;
-			padding: 20px;
-		}
-		.property_visibility, .method_return_visibility {
-			grid-row: span 3;
-			justify-self: end;
-			padding-right: 5px;
-			color: #384838;
-			grid-column: 1;
-		}
-		.property_name, .method_name {
-			justify-self: start;
-			margin-left: 5px;
-			color: #18184c;
-			grid-column: 2;
-		}
-		.property_short_description, .method_short_description, .property_long_description, .method_long_description, .property_description, .method_description {
-			justify-self: start;
-			padding: 0px 0 0px 25px;
-			margin: 0;
-			grid-column: 2;
-		}
-		#methods {
-			display: grid;
-			grid-template-columns: minmax(100px, auto) 1fr;
-		}
-		.parameter_visibility {
-			color: #384838;
-		}
-		.parameter_name {
-		}
-		</style>
-		<script type="text/javascript" src="./classlist.js"></script>
+		<link rel="stylesheet" href="style.css">
     </head>
     <body style="margin: 0; padding: 0;">
     	<div class="doc-container">
-			<div id="sidebar">
-				<div id="classlist" role="tablist">
-				</div>
-			</div>
-			<div id="main">
-				<h1>{{ class.name }}</h1>
+		<div id="sidebar">
+		{{ sidebarHtml | raw }}
+		</div>
+		<div id="main">
+			<h1>{{ class.name }}</h1>
 
-				<div id="shortdescription" class="description">{{ class.shortDescription }}</div>
+			<div id="shortdescription" class="description">{{ class.shortDescription }}</div>
 
-				<div id="longdescription" class="description">{{ class.longDescription | markdown }}</div>
+			<div id="longdescription" class="description">{{ class.longDescription | markdown }}</div>
 
-				<div id="grid">
-					<span class="h2">Fields</span>
-					{% for property in class.AllProperties %}
-					<div class="property_name">
-					{{ property.visibility }}
+			<div id="grid">
+				{% if class.AllProperties is not empty %}
+				<span class="h2">Fields</span>
+				{% for property in class.AllProperties %}
+				<div class="property_name">
+					<span class="keyword">{{ property.visibility }}
 					{% if property.isStatic %}
 					static
 					{% endif %}
@@ -120,23 +32,29 @@
 					{% if property.isFinal %}
 					final
 					{% endif %}
-					{{ property.name }}: {{ property.type.Link | raw }}
-					</div>
-					<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
-					{% endfor %}
+					</span>
+					{{ property.name }}:
+					<span class="keyword">{{ property.type.Link | raw }}</span>
+				</div>
+				<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
+				{% endfor %}
+				{% endif %}
 
-					<span class="h2">Constructor</span>
-					<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="parameter_visibility">{{ param.type.Link | raw }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
-					</div>
-					<div class="method_description">
+				<span class="h2">Constructor</span>
+				<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="keyword">{{ param.type.Link | raw }}</span>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}
+					{% endfor %})
+				</div>
+				<div class="method_description">
 					{{ class.Constructor.shortDescription | markdown }}
 					{{ class.Constructor.longDescription | markdown }}
-					</div>
+				</div>
 
-					<span class="h2">Methods</span>
-					{% for method in class.AllMethods %}
-					<div class="method_name">
+				{% if class.AllMethods is not empty %}
+				<span class="h2">Methods</span>
+				{% for method in class.AllMethods %}
+				<div class="method_name">
+					<span class="keyword">
 					{{ method.visibility }}
 					{% if method.isStatic %}
 					static
@@ -147,34 +65,23 @@
 					{% if method.isFinal %}
 					final
 					{% endif %}
-					{{ method.name }}({% for param in method.parameters %}<span class="parameter_visibility">{{ param.type.Link | raw }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %}): {{ method.returnType.Link | raw }}
-					</div>
-					<div class="method_description">
+					</span>
+					{{ method.name }}({% for param in method.parameters %}<span class="keyword">{{ param.type.Link | raw }}</span>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}
+					{% endfor %}):
+					<span class="keyword">{{ method.returnType.Link | raw }}</span>
+				</div>
+				<div class="method_description">
 					{{ method.shortDescription | markdown }}
 					{{ method.longDescription | markdown }}
-					</div>
-					{% endfor %}
 				</div>
+				{% endfor %}
+				{% endif %}
 			</div>
 		</div>
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-		<script type="text/javascript">
-			var node = document.getElementById('classlist');
-			namespaceNames = Object.keys(classList).sort();
-			for (i in namespaceNames) {
-				var namespaceName = namespaceNames[i];
-				var nsName = encodeURIComponent(namespaceName.replace('\\', ''));
-				var cardHtml = '<div class="xcard"><div class="xcard-header" role="tab"><a data-toggle="collapse" href="#ns-' + nsName + '" aria-expanded="false" aria-controls="#ns-' + nsName + '" class="collapsed">' + namespaceName + '</a></div><div id="ns-' + nsName + '" class="collapse"><ul>'
-				for (fileName in classList[namespaceName]) {
-					var cls = classList[namespaceName][fileName];
-					cardHtml += '<li><a href="' + fileName + '">' + cls.name + '</a></li>';
-				}
-				cardHtml += '</ul></div></div>';
-				node.innerHTML += cardHtml;
-			}
-		</script>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     </body>
 </html>

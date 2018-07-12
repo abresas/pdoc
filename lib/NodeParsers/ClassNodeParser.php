@@ -42,7 +42,7 @@ class ClassNodeParser extends AbstractNodeParser
         } else {
             $extends = null;
         }
-        $class = new PHPClass($name, $extends, $sourceLoc, $docBlock, $methods, $properties);
+        $class = new PHPClass($name, $ctx->namespace->name, $extends, $sourceLoc, $docBlock, $methods, $properties);
 
         return $class;
     }

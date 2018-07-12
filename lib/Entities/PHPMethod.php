@@ -7,6 +7,12 @@ use \PDoc\Tags\ParamTag;
 use \PDoc\Tags\ReturnTag;
 use \PDoc\Types\AbstractType;
 
+/**
+ * A method of a class.
+ *
+ * Methods have description, return type and description, parameters, and
+ * modifiers: visibility (public, protected, private), "static", "abstract", "final".
+ */
 class PHPMethod extends AbstractEntity implements \JsonSerializable
 {
     /** @var AbstractType $returnType */
@@ -36,6 +42,10 @@ class PHPMethod extends AbstractEntity implements \JsonSerializable
         $this->isFinal = $isFinal;
         parent::__construct('method', $name, $loc, $docBlock);
     }
+    /**
+     * Change a parameter's attributes based on an _param_ tag found on this method's documentation.
+     * @param ParamTag $paramTag The _param_ tag that was found.
+     */
     public function handleParamTag(ParamTag $paramTag): void
     {
         if (!isset($this->parameters[$paramTag->variable])) {
@@ -46,6 +56,10 @@ class PHPMethod extends AbstractEntity implements \JsonSerializable
         $param->type = $paramTag->type;
         $param->description = $paramTag->description;
     }
+    /**
+     * Change this method's attributes based on the _return_ tag found on its documentation.
+     * @param ReturnTag $returnTag The return tag to use for determining return type and description.
+     */
     public function handleReturnTag(ReturnTag $returnTag): void
     {
         $this->returnType = $returnTag->type;

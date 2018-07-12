@@ -43,7 +43,6 @@ class DocumentationGenerator
             $namespaces[$namespace->name] = $namespace;
             $namespace->addSymbols($symbols);
         }
-        var_dump($namespaces);
         foreach ($namespaces as $namespace) {
             foreach ($namespace->classes as $class) {
                 if (is_null($class->extends)) {
@@ -58,6 +57,10 @@ class DocumentationGenerator
                 }
             }
         }
+
+        uasort($namespaces, function ($n1, $n2) {
+            return $n1->name < $n2->name ? -1 : 1;
+        });
 
         return $namespaces;
     }

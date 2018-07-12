@@ -20,6 +20,9 @@ function ast_walk($ast, callable $callback): void
     }
 }
 
+/**
+ * Query AST to find nodes of certain kinds and parse them.
+ */
 class ASTFinder
 {
     /**

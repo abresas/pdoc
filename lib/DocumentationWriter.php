@@ -12,14 +12,16 @@ use \PDoc\Render\TemplateLoader;
  */
 class DocumentationWriter
 {
-    /** @var object $classTemplate A twig template for classes. */
-    private $classTemplate;
+    /** @var string $templatesPath The directory were templates are stored. */
+    private $templatesPath;
+    /** @var TemplateLoader $templateLoader Class that loads template files */
+    private $templateLoader;
     /** @var FileWriter $fileWriter The object used for writing text files to disk. */
     private $fileWriter;
-    public function __construct()
+    public function __construct(string $templatesPath = './templates')
     {
-        $templateLoader = new TemplateLoader('./templates', 'default');
-        $this->classTemplate = $templateLoader->loadClassTemplate();
+        $this->templatesPath = realpath($templatesPath);
+        $this->templateLoader = new TemplateLoader($this->templatesPath, 'default');
         $this->fileWriter = new FileWriter();
     }
     /**
@@ -29,25 +31,45 @@ class DocumentationWriter
      * @param PHPNameSpace[] $namespaces The generated namespaces (with all their classes).
      * @param string $targetPath The directory to write to.
      */
-    public function write(array $namespaces, $targetPath = './docs'): void
+    public function write(array $namespaces, string $targetPath = './docs'): void
     {
-        $classList = [];
+        $classTemplate = $this->templateLoader->loadClassTemplate();
         $path = realpath($targetPath);
+        $this->renderCSS($path);
+        $sidebarHtml = $this->renderSidebar($namespaces);
+        $this->renderIndex($namespaces, $sidebarHtml, $path);
         foreach ($namespaces as $namespace) {
-            $classList[$namespace->name] = [];
-            // echo json_encode($namespace->classes[0], \JSON_PRETTY_PRINT, 20);
             foreach ($namespace->classes as $class) {
-                $output = $this->classTemplate->render([ 'class' => $class, 'base' => $path]);
+                $output = $classTemplate->render([ 'class' => $class, 'base' => $path, 'sidebarHtml' => $sidebarHtml ]);
                 $fileName = str_replace('\\', '.', $namespace->name) . '.' . $class->name . '.html';
-                $classList[$namespace->name][$fileName] = $class;
                 $this->fileWriter->writeFile($path . DIRECTORY_SEPARATOR . $fileName, $output);
             }
         }
-        $this->fileWriter->writeFile('./docs/classlist.js', 'window.classList = ' . json_encode($classList));
     }
-    public function injectClassTemplate($classTemplate): void
+    public function renderCSS(string $path)
     {
-        $this->classTemplate = $classTemplate;
+        $this->fileWriter->writeFile($path . DIRECTORY_SEPARATOR . "style.css", $this->templateLoader->loadCSS());
+    }
+    public function renderIndex(array $namespaces, string $sidebarHtml, string $path)
+    {
+        $indexTemplate = $this->templateLoader->loadIndexTemplate();
+        $output = $indexTemplate->render(['namespaces' => $namespaces, 'sidebarHtml' => $sidebarHtml]);
+        $this->fileWriter->writeFile($path . DIRECTORY_SEPARATOR . 'index.html', $output);
+    }
+    /**
+     * Write common sidebar HTML to a file to be reused in all templates.
+     *
+     * This avoids having to pass through all classes to generate HTML for every class,
+     * just generate the HTML once and then include it in every class file.
+     */
+    public function renderSidebar(array $namespaces): string
+    {
+        $sidebarTemplate = $this->templateLoader->loadSidebarTemplate();
+        return $sidebarTemplate->render([ 'namespaces' => $namespaces ]);
+    }
+    public function injectTemplateLoader($templateLoader): void
+    {
+        $this->templateLoader = $templateLoader;
     }
     public function injectFileWriter($fileWriter): void
     {
