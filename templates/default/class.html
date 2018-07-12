@@ -62,7 +62,7 @@
 			font-size: 25px;
 			padding: 20px;
 		}
-		.property_type, .method_return_type {
+		.property_visibility, .method_return_visibility {
 			grid-row: span 3;
 			justify-self: end;
 			padding-right: 5px;
@@ -85,7 +85,7 @@
 			display: grid;
 			grid-template-columns: minmax(100px, auto) 1fr;
 		}
-		.parameter_type {
+		.parameter_visibility {
 			color: #384838;
 		}
 		.parameter_name {
@@ -109,8 +109,7 @@
 				<div id="grid">
 					<span class="h2">Fields</span>
 					{% for property in class.AllProperties %}
-					<div class="property_type">{{ property.type.Link | raw }}</div>
-					<div class="property_name">{{ property.name }}
+					<div class="property_name">
 					{{ property.visibility }}
 					{% if property.isStatic %}
 					static
@@ -121,13 +120,13 @@
 					{% if property.isFinal %}
 					final
 					{% endif %}
+					{{ property.name }}: {{ property.type.Link | raw }}
 					</div>
 					<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
 					{% endfor %}
 
 					<span class="h2">Constructor</span>
-					<div class="method_return_type"></div>
-					<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
+					<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="parameter_visibility">{{ param.type.Link | raw }}</span>
 					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
 					</div>
 					<div class="method_description">
@@ -137,9 +136,7 @@
 
 					<span class="h2">Methods</span>
 					{% for method in class.AllMethods %}
-					<div class="method_return_type">{{ method.returnType.Link | raw }}</div>
-					<div class="method_name">{{ method.name }}({% for param in method.parameters %}<span class="parameter_type">{{ param.type.Link | raw }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %})
+					<div class="method_name">
 					{{ method.visibility }}
 					{% if method.isStatic %}
 					static
@@ -150,6 +147,8 @@
 					{% if method.isFinal %}
 					final
 					{% endif %}
+					{{ method.name }}({% for param in method.parameters %}<span class="parameter_visibility">{{ param.type.Link | raw }}</span>
+					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}{% endfor %}): {{ method.returnType.Link | raw }}
 					</div>
 					<div class="method_description">
 					{{ method.shortDescription | markdown }}
