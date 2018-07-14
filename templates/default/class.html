@@ -15,7 +15,7 @@
 
 			<div id="shortdescription" class="description">{{ class.shortDescription }}</div>
 
-			<div id="longdescription" class="description">{{ class.longDescription | markdown }}</div>
+			<div id="longdescription" class="description markdown">{{ class.longDescription | markdown }}</div>
 
 			<div id="grid">
 				{% if class.AllProperties is not empty %}
@@ -36,16 +36,23 @@
 					{{ property.name }}:
 					<span class="keyword">{{ property.type.Link | raw }}</span>
 				</div>
-				<div class="property_short_description">{{ property.shortDescription | markdown }}</div>
+				<div class="property_short_description markdown">{{ property.shortDescription | markdown }}</div>
 				{% endfor %}
 				{% endif %}
 
 				<span class="h2">Constructor</span>
-				<div class="method_name">__construct({% for param in class.Constructor.parameters %}<span class="keyword">{{ param.type.Link | raw }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}
-					{% endfor %})
+				<div class="method_name">
+					{% spaceless %}
+					<span>__construct(</span>
+					{% for param in class.Constructor.parameters %}
+						<span class="keyword">{{ param.type.Link | raw }} </span>
+						<span class="parameter_name"> {{ param.name }}</span>
+						{% if not loop.last %}<span>, </span>{% endif %}
+					{% endfor %}
+					<span>):</span>
+					{% endspaceless %}
 				</div>
-				<div class="method_description">
+				<div class="method_description markdown">
 					{{ class.Constructor.shortDescription | markdown }}
 					{{ class.Constructor.longDescription | markdown }}
 				</div>
@@ -66,12 +73,18 @@
 					final
 					{% endif %}
 					</span>
-					{{ method.name }}({% for param in method.parameters %}<span class="keyword">{{ param.type.Link | raw }}</span>
-					<span class="parameter_name">{{ param.name }}</span>{% if not loop.last %}, {% endif %}
-					{% endfor %}):
+					{% spaceless %}
+					<span>{{ method.name }}(</span>
+					{% for param in method.parameters %}
+						<span class="keyword">{{ param.type.Link | raw }} </span>
+						<span class="parameter_name"> {{ param.name }}</span>
+						{% if not loop.last %}<span>, </span>{% endif %}
+					{% endfor %}
+					<span>):</span>
+					{% endspaceless %}
 					<span class="keyword">{{ method.returnType.Link | raw }}</span>
 				</div>
-				<div class="method_description">
+				<div class="method_description markdown">
 					{{ method.shortDescription | markdown }}
 					{{ method.longDescription | markdown }}
 				</div>

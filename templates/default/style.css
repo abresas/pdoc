@@ -109,3 +109,9 @@ div.index div.class_short_description {
 	grid-column: 2;
 	padding-left: 20px;
 }
+#longdescription {
+	font-family: Roboto;
+}
+.markdown ul {
+	padding-left: 20px;
+}

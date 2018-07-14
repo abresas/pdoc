@@ -12,17 +12,18 @@ use \Aptoma\Twig\Extension\MarkdownExtension;
  * for documentation.:
  *
  * Example file structure:
- * - templates
- *   - light
- *     - class.html
- *     - sidebar.html
- *     - index.html
- *     - style.css
- *   - dark
- *     - class.html
- *     - sidebar.html
- *     - index.html
- *     - style.css
+ *
+ * * templates
+ *     * light
+ *         * class.html
+ *         * sidebar.html
+ *         * index.html
+ *         * style.css
+ *     * dark
+ *         * class.html
+ *         * sidebar.html
+ *         * index.html
+ *         * style.css
  */
 class TemplateLoader
 {

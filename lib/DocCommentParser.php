@@ -18,7 +18,7 @@ class DocCommentParser
     {
         $m = [];
         $text = substr($text, 3, -2);
-        $text = preg_replace("/^ *\* */m", "", $text);
+        $text = preg_replace("/^ *\* ?/m", "", $text);
         $text = trim($text) . "\n";
         preg_match("/^(((\n)|([^@\n]+\n))*)((@[^\n]+\n)*)$/sAD", $text, $m);
 

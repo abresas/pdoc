@@ -38,6 +38,7 @@ class ClassNodeParser extends AbstractNodeParser
 
         $properties = $this->parseProperties($node, $ctx);
         $methods = $this->parseMethods($node, $ctx);
+        $extends = $this->getParentClassName($node, $ctx);
 
         $docComment = $node->children['docComment'] ?? '';
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
@@ -82,7 +83,7 @@ class ClassNodeParser extends AbstractNodeParser
      * @param Node $node The AST node that defines a class.
      * @return string|null The full namespaced parent class name if specified, otherwise null.
      */
-    private function getParentClassName(Node $node): ?string
+    private function getParentClassName(Node $node, ParseContext $ctx): ?string
     {
         if (isset($node->children['extends'])) {
             return $ctx->resolve($node->children['extends']->children['name']);

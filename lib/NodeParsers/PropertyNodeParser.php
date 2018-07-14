@@ -36,7 +36,7 @@ class PropertyNodeParser extends AbstractNodeParser
     }
     /**
      * @TODO This is similar with MethodNodeParser::parseVisibility
-     * @param int $flags
+     * @param int $astFlags
      * @param string $propName Name of property currently being parsed.
      * @return string "public", "protected" or "private"
      */
