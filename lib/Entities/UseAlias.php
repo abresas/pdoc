@@ -4,7 +4,7 @@ namespace PDoc\Entities;
 /**
  * Define aliases for namespaced classes.
  *
- * `Use` declarations have two formats.
+ * `Use` statements have two formats.
  *
  * With `use \namespace\of\className` the class can be referenced using simply the
  * class name.

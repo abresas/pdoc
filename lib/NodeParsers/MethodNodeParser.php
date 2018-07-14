@@ -33,28 +33,47 @@ class MethodNodeParser extends AbstractNodeParser
         $parameters = $this->astFinder->parseWith($node, $ctx, \ast\AST_PARAM, $this->parameterNodeParser);
 
         $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
-        if (isset($node->children['returnType'])) {
-            $returnType = $this->typeNodeParser->parse($node->children['returnType'], $ctx);
-        } else {
-            $returnType = new AnyType();
-        }
+        $returnType = $this->parseReturnType($node, $ctx);
 
         $docComment = $node->children['docComment'] ?? '';
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
-
-        if ($node->flags & \ast\flags\MODIFIER_PUBLIC) {
-            $visibility = 'public';
-        } elseif ($node->flags & \ast\flags\MODIFIER_PROTECTED) {
-            $visibility = 'protected';
-        } elseif ($node->flags & \ast\flags\MODIFIER_PRIVATE) {
-            $visibility = 'private';
-        } else {
-            error_log($sourceLoc . ': Unexpected visibility on ' . $node->children['name']);
-        }
-        $isStatic = (bool)($node->flags & \ast\flags\MODIFIER_STATIC);
-        $isAbstract = (bool)($node->flags & \ast\flags\MODIFIER_ABSTRACT);
-        $isFinal = (bool)($node->flags & \ast\flags\MODIFIER_FINAL);
+        $visibility = $this->parseVisibility($node, $ctx);
+        $isStatic = (bool) ($node->flags & \ast\flags\MODIFIER_STATIC);
+        $isAbstract = (bool) ($node->flags & \ast\flags\MODIFIER_ABSTRACT);
+        $isFinal = (bool) ($node->flags & \ast\flags\MODIFIER_FINAL);
         return new PHPMethod($node->children['name'], $sourceLoc, $docBlock, $returnType, $visibility, $isStatic, $isAbstract, $isFinal, $parameters);
+    }
+    /**
+     * Parse AST method node return typehint.
+     * @param Node $node
+     * @param ParseContext $ctx
+     * @return \PDoc\Types\AbstractType Is AnyType if not specified.
+     */
+    private function parseReturnType(Node $node, ParseContext $ctx)
+    {
+        if (isset($node->children['returnType'])) {
+            return $this->typeNodeParser->parse($node->children['returnType'], $ctx);
+        } else {
+            return new AnyType();
+        }
+    }
+    /**
+     * Parse AST method node to generate its visibility (public, protected or private).
+     * @param Node $node
+     * @param ParseContext $ctx
+     * @return string "public", "protected" or "private"
+     */
+    private function parseVisibility(Node $node, ParseContext $ctx)
+    {
+        if ($node->flags & \ast\flags\MODIFIER_PUBLIC) {
+            return 'public';
+        } elseif ($node->flags & \ast\flags\MODIFIER_PROTECTED) {
+            return 'protected';
+        } elseif ($node->flags & \ast\flags\MODIFIER_PRIVATE) {
+            return 'private';
+        } else {
+            throw new Exception($sourceLoc . ': Unexpected visibility on ' . $node->children['name']);
+        }
     }
     public function injectParameterNodeParser()
     {
