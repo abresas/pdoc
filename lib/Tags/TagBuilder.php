@@ -6,6 +6,9 @@ use PDoc\SourceLocation;
 use PDoc\Types\ClassType;
 use PDoc\Types\TypeFactory;
 
+/**
+ * Construct a Tag instance from phpDoc string.
+ */
 class TagBuilder
 {
     /** @var TypeFactory $typeFactory */
@@ -14,6 +17,12 @@ class TagBuilder
     {
         $this->typeFactory = new TypeFactory();
     }
+    /**
+     * @param string $name The tag that was found (without leading @ symbol).
+     * @param string[] $arguments List of words that were found after the tag.
+     * @param ParseContext $ctx The context of the parser when it was found.
+     * @param SourceLocation $sourceLoc File and line of the symbol whose tag this is.
+     */
     public function build(string $name, array $arguments, ParseContext $ctx, SourceLocation $sourceLoc)
     {
         // this could be implemented as a lookup in name => class array

@@ -5,7 +5,7 @@ use \PDoc\Entities\AbstractEntity;
 use \PDoc\Types\AbstractType;
 
 /**
- * An @return tag.
+ * A return tag.
  *
  * Describes the function return value.
  */

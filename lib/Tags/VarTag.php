@@ -5,9 +5,9 @@ use \PDoc\Entities\AbstractEntity;
 use \PDoc\Types\AbstractType;
 
 /**
- * @var tag
+ * var tag
  *
- * Format: @var _type_ _$variableName_ _description..._
+ * Format: var _type_ _$variableName_ _description..._
  */
 class VarTag
 {
