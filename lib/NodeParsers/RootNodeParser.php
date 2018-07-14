@@ -5,11 +5,22 @@ use \ast\Node;
 
 use \PDoc\ParseContext;
 
+/**
+ * Parse root node of a PHP file.
+ *
+ * The result of parsing a PHP file is a FileParseResult
+ * that contains the namespace of the file, and classes and functions
+ * that were defined in the file.
+ */
 class RootNodeParser extends AbstractNodeParser
 {
+    /** @var ClassNodeParser $classNodeParser Parser used for parsing classes. */
     protected $classNodeParser;
+    /** @var FunctionNodeParser $functionNodeParser Parser used for parsing functions. */
     protected $functionNodeParser;
+    /** @var NamespaceNodeParser $namespaceNodeParser Parser used for parsing namespaces. */
     protected $namespaceNodeParser;
+    /** @var UseAlias $useNodeParser Parser used for parsing aliases. */
     protected $useNodeParser;
 
     public function __construct()
@@ -21,6 +32,8 @@ class RootNodeParser extends AbstractNodeParser
         $this->useNodeParser = new UseNodeParser();
     }
     /**
+     * @param Node $node The root AST node of the file.
+     * @param ParseContext $ctx The shared context for all parsers of the file.
      * @return FileParseResult
      */
     public function parse(Node $node, ParseContext $ctx)
@@ -39,16 +52,20 @@ class RootNodeParser extends AbstractNodeParser
 
         return new FileParseResult($namespace, $classes, $functions);
     }
-    public function injectClassNodeParser($nodeParser)
+    public function injectClassNodeParser($nodeParser): void
     {
         $this->classNodeParser = $nodeParser;
     }
-    public function injectFunctionNodeParser($nodeParser)
+    public function injectFunctionNodeParser($nodeParser): void
     {
         $this->functionNodeParser = $nodeParser;
     }
-    public function injectNamespaceNodeParser($nodeParser)
+    public function injectNamespaceNodeParser($nodeParser): void
     {
         $this->namespaceNodeParser = $nodeParser;
+    }
+    public function injectUseNodeParser($nodeParser): void
+    {
+        $this->useNodeParse = $nodeParser;
     }
 }

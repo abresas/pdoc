@@ -2,17 +2,21 @@
 namespace PDoc\Entities;
 
 /**
- * A "use _namespaced-class_" declaration.
+ * Define aliases for namespaced classes.
  *
- * The declaration may end with "as _alias_" to specify
- * a different name for the class. Otherwise the class name
- * (without namespace) can be used for referencing the class.
+ * `Use` declarations have two formats.
+ *
+ * With `use \namespace\of\className` the class can be referenced using simply the
+ * class name.
+ *
+ * Otherwise, `use \namespace\of\className as aliasName` can be used to explicitly
+ * set the desired alias for the class in the current file.
  */
 class UseAlias
 {
     /** Name of referenced class. */
     public $name;
-    /** Alias used within a file for this class. */
+    /** Alias used within a file for this class. Is same as last part of ::name if not set explicitly. */
     public $alias;
     /**
      * @param string $name The name of the referenced class.
