@@ -12,29 +12,27 @@ use \PDoc\SourceLocation;
  *
  * Also holds all classes and functions that were defined in this namespace.
  */
-class PHPNamespace extends AbstractEntity implements \JsonSerializable
+class PHPNamespace implements \JsonSerializable
 {
     /** @var PHPClass[] $classes The classes that were defined in this namespace. */
     public $classes = [];
     /** @var PHPFunction[] $functions The functions that were defined in this namespace. */
     public $functions = [];
+    /** @var string $name The namespace name */
+    public $name;
     /**
      * @param string $name The name of the namespace.
-     * @param SourceLocation $sourceLoc The line and file this namespace was first found to be used.
-     * @param DocBlock $docBlock Attributes that were defined in a phpDoc for this namespace.
      * @param PHPClass[] $classes Classes defined in this namespace.
      * @param PHPFunction[] $functions Functions defined in this namespace.
      */
     public function __construct(
         string $name,
-        SourceLocation $sourceLoc,
-        DocBlock $docBlock,
         $classes = [],
         $functions = []
     ) {
+        $this->name = $name;
         $this->addClasses($classes);
         $this->addFunctions($functions);
-        parent::__construct('namespace', $name, $sourceLoc, $docBlock);
     }
     public function jsonSerialize(): array
     {

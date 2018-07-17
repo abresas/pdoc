@@ -9,7 +9,7 @@ use \PDoc\SourceLocation;
 /**
  * Classes that process AST nodes to generate AbstractEntity instances.
  */
-abstract class AbstractNodeParser
+abstract class AbstractNodeParser implements NodeParser
 {
     /** @var string $filePath */
     protected $filePath;

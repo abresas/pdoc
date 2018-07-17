@@ -9,7 +9,7 @@ use \PDoc\Types\AbstractType;
  *
  * Describes the function return value.
  */
-class ReturnTag
+class ReturnTag extends AbstractTag
 {
     /** @var AbstractType $type */
     public $type;

@@ -13,7 +13,7 @@ class DocBlock
     /** @var \PDoc\Tags\AbstractTag[] $tags */
     public $tags;
 
-    public function __construct(string $shortDescription, string $longDescription, array $tags)
+    public function __construct(string $shortDescription = '', string $longDescription = '', array $tags = [])
     {
         $this->shortDescription = $shortDescription;
         $this->longDescription = $longDescription;

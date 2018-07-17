@@ -7,7 +7,7 @@ use \PDoc\Types\AbstractType;
 /**
  * param phpDoc tag
  */
-class ParamTag
+class ParamTag extends AbstractTag
 {
     /** @var AbstractType $type */
     public $type;

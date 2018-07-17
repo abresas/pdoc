@@ -31,7 +31,7 @@ class DocumentationWriter
      * @param PHPNameSpace[] $namespaces The generated namespaces (with all their classes).
      * @param string $targetPath The directory to write to.
      */
-    public function write(array $namespaces, string $targetPath = './docs'): void
+    public function write(iterable $namespaces, string $targetPath = './docs'): void
     {
         $classTemplate = $this->templateLoader->loadClassTemplate();
         $path = realpath($targetPath);
@@ -46,11 +46,11 @@ class DocumentationWriter
             }
         }
     }
-    public function renderCSS(string $path)
+    private function renderCSS(string $path)
     {
         $this->fileWriter->writeFile($path . DIRECTORY_SEPARATOR . "style.css", $this->templateLoader->loadCSS());
     }
-    public function renderIndex(array $namespaces, string $sidebarHtml, string $path)
+    private function renderIndex(iterable $namespaces, string $sidebarHtml, string $path)
     {
         $indexTemplate = $this->templateLoader->loadIndexTemplate();
         $output = $indexTemplate->render(['namespaces' => $namespaces, 'sidebarHtml' => $sidebarHtml]);
@@ -62,7 +62,7 @@ class DocumentationWriter
      * This avoids having to pass through all classes to generate HTML for every class,
      * just generate the HTML once and then include it in every class file.
      */
-    public function renderSidebar(array $namespaces): string
+    private function renderSidebar(iterable $namespaces): string
     {
         $sidebarTemplate = $this->templateLoader->loadSidebarTemplate();
         return $sidebarTemplate->render([ 'namespaces' => $namespaces ]);

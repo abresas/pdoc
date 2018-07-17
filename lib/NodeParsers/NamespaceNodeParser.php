@@ -23,6 +23,6 @@ class NamespaceNodeParser extends AbstractNodeParser
         $docComment = $node->children['docComment'] ?? '';
         $sourceLoc = new SourceLocation($ctx->filePath, $node->lineno);
         $docBlock = $this->parseDocComment($docComment, $ctx, $sourceLoc);
-        return new PHPNamespace($node->children['name'], $sourceLoc, $docBlock);
+        return new PHPNamespace($node->children['name']);
     }
 }

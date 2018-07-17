@@ -4,6 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use PDoc\DocumentationGenerator;
 use PDoc\DocumentationWriter;
+use PDoc\FileSystem\DirectoryScanner;
 
 $dirPath = '/home/abresas/dev/pdoc/lib';
 if (count($argv) < 2) {
@@ -11,7 +12,9 @@ if (count($argv) < 2) {
     exit(1);
 }
 $dirPath = realpath($argv[1]);
+$dirScanner = new DirectoryScanner();
+$files = $dirScanner->scan($dirPath, '/^.*\.php$/');
 $generator = new DocumentationGenerator();
-$namespaces = $generator->parseDirectory($dirPath);
+$documentation = $generator->parseFiles($files);
 $writer = new DocumentationWriter();
-$writer->write($namespaces);
+$writer->write($documentation);

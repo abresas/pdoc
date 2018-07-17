@@ -9,7 +9,7 @@ use \PDoc\Types\AbstractType;
  *
  * Format: var _type_ _$variableName_ _description..._
  */
-class VarTag
+class VarTag extends AbstractTag
 {
     /** @var AbstractType $type */
     public $type;

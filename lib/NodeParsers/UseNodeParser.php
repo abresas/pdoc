@@ -9,7 +9,7 @@ use \PDoc\Entities\UseAlias;
 /**
  * Parse "use namespace [as alias]" statements.
  */
-class UseNodeParser extends AbstractNodeParser
+class UseNodeParser extends AbstractNodeParser implements NodeParser
 {
     /**
      * @param Node $node

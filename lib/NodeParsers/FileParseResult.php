@@ -16,7 +16,7 @@ class FileParseResult
      * @param PHPClass[] $classes
      * @param PHPFunction[] $functions
      */
-    public function __construct(PHPNamespace $namespace, array $classes, array $functions)
+    public function __construct(PHPNamespace $namespace, array $classes = [], array $functions = [])
     {
         $this->namespace = $namespace;
         $this->classes = $classes;

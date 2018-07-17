@@ -2,7 +2,9 @@
 	"name": "pdoc",
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.3",
-		"phan/phan": "^0.12.13"
+		"phan/phan": "^0.12.13",
+		"atoum/atoum": "^3.3",
+		"atoum/reports-extension": "^3.0"
 	},
 	"autoload": {
 		"psr-4": {

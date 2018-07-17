@@ -4,6 +4,7 @@ namespace PDoc;
 use \ast\Node;
 
 use \PDoc\NodeParsers\AbstractNodeParser;
+use \PDoc\NodeParsers\NodeParser;
 
 /**
  * Recursively traverse the ast
@@ -64,7 +65,7 @@ class ASTFinder
      * @param AbstractNodeParser $parser The parser to use for parsing.
      * @return \PDoc\Entities\AbstractEntity[] The results of parsing with the parser.
      */
-    public function parseWith($root, ParseContext $ctx, int $kind, AbstractNodeParser $parser): array
+    public function parseWith($root, ParseContext $ctx, int $kind, NodeParser $parser): array
     {
         $nodes = $this->byKind($root, $kind);
         return array_map(function ($node) use ($parser, $ctx) {
