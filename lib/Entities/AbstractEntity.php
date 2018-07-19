@@ -56,7 +56,7 @@ abstract class AbstractEntity
      * Change attributes of this symbol according to documentation.
      * @param DocBlock $docBlock The parsed phpDoc comment block.
      */
-    public function setDocBlock(DocBlock $docBlock): void
+    protected function setDocBlock(DocBlock $docBlock): void
     {
         $this->docBlock = $docBlock;
         $this->shortDescription = $docBlock->shortDescription;

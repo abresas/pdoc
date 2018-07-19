@@ -55,10 +55,10 @@ class TypeNodeParser
             } elseif ($node->flags === \ast\flags\TYPE_OBJECT) {
                 return new ObjectType();
             } else {
-                throw new \Exception($ctx->sourceLocation . ': Unexpected AST_TYPE: ' . $node->flags);
+                throw new \Exception($ctx->filePath . ':' . $node->lineno . ': Unexpected AST_TYPE: ' . $node->flags);
             }
         } else {
-            throw new \Exception($ctx->sourceLocation . ': Unexpected type node kind: ' . $node->kind);
+            throw new \Exception($ctx->filePath . ':' . $node->lineno . ': Unexpected type node kind: ' . $node->kind);
         }
     }
 }

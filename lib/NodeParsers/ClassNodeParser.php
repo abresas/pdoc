@@ -3,6 +3,7 @@ namespace PDoc\NodeParsers;
 
 use \ast\Node;
 
+use \PDoc\DocCommentParser;
 use \PDoc\Entities\PHPClass;
 use \PDoc\ParseContext;
 use \PDoc\SourceLocation;
@@ -17,12 +18,15 @@ class ClassNodeParser extends AbstractNodeParser
 {
     /** @var PropertyDeclarationNodeParser $propertyDeclarationNodeParser */
     protected $propertyDeclarationNodeParser;
+    /** @var DocCommentParser $docCommentParser */
+    protected $docCommentParser;
     /** @var MethodNodeParser $methodNodeParser */
     protected $methodNodeParser;
 
     public function __construct()
     {
         parent::__construct();
+        $this->docCommentParser = new DocCommentParser();
         $this->propertyDeclarationNodeParser = new PropertyDeclarationNodeParser();
         $this->methodNodeParser = new MethodNodeParser();
     }
@@ -106,5 +110,16 @@ class ClassNodeParser extends AbstractNodeParser
     public function injectMethodNodeParser($nodeParser): void
     {
         $this->methodNodeParser = $nodeParser;
+    }
+
+    /**
+     * Parse the doc comment found above the currently parsed node.
+     * @param string $docComment The text of the phpDoc comment.
+     * @param ParseContext $ctx The state of the parser when parsing this node.
+     * @param SourceLocation $sourceLoc The file and line where the current node was found.
+     */
+    protected function parseDocComment(string $docComment, ParseContext $ctx, SourceLocation $sourceLoc)
+    {
+        return $this->docCommentParser->parse($docComment, $ctx, $sourceLoc);
     }
 }

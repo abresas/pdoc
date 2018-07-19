@@ -3,6 +3,7 @@ namespace PDoc\NodeParsers;
 
 use \ast\Node;
 
+use \PDoc\ASTFinder;
 use \PDoc\ParseContext;
 use \PDoc\SourceLocation;
 
@@ -13,11 +14,14 @@ use \PDoc\SourceLocation;
  */
 class PropertyDeclarationNodeParser extends AbstractNodeParser
 {
+    /** @var ASTFinder $astFinder */
+    private $astFinder;
     /** @var PropertyNodeParser $propertyNodeParser The parser that handles each property that was defined in this statement. */
     private $propertyNodeParser;
     public function __construct()
     {
         parent::__construct();
+        $this->astFinder = new ASTFinder();
         $this->propertyNodeParser = new PropertyNodeParser();
     }
     /**
@@ -32,8 +36,8 @@ class PropertyDeclarationNodeParser extends AbstractNodeParser
         $properties = $this->astFinder->parseWith($node, $declCtx, \ast\AST_PROP_ELEM, $this->propertyNodeParser);
         return $properties;
     }
-    public function injectPropertyNodeParser($parser)
+    public function injectASTFinder($finder)
     {
-        $this->propertyNodeParser = $parser;
+        $this->astFinder = $finder;
     }
 }
