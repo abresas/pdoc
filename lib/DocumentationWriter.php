@@ -2,7 +2,7 @@
 namespace PDoc;
 
 use \PDoc\FileSystem\FileWriter;
-use \PDoc\Render\TemplateLoader;
+use \PDoc\Templates\TemplateLoader;
 
 /**
  * Write documentation to a target directory.

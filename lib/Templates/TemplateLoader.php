@@ -1,5 +1,5 @@
 <?php
-namespace PDoc\Render;
+namespace PDoc\Templates;
 
 use \Aptoma\Twig\Extension\MarkdownEngine;
 use \Aptoma\Twig\Extension\MarkdownExtension;

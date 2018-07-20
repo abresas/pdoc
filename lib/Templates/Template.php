@@ -1,5 +1,5 @@
 <?php
-namespace PDoc\Render;
+namespace PDoc\Templates;
 
 interface Template
 {

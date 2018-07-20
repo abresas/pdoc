@@ -10,7 +10,7 @@ class DocumentationWriter extends \atoum\test
 {
     public function testWrite()
     {
-        $tl = new \mock\PDoc\Render\TemplateLoader('./templates', 'default');
+        $tl = new \mock\PDoc\Templates\TemplateLoader('./templates', 'default');
         $fw = new \mock\PDoc\FileSystem\FileWriter();
 
         $dw = new \PDoc\DocumentationWriter();
