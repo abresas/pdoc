@@ -3,6 +3,7 @@ namespace PDoc\NodeParsers;
 
 use \ast\Node;
 
+use \PDoc\ASTFinder;
 use \PDoc\DocCommentParser;
 use \PDoc\Entities\PHPClass;
 use \PDoc\ParseContext;
@@ -17,15 +18,18 @@ use \PDoc\SourceLocation;
 class ClassNodeParser extends AbstractNodeParser
 {
     /** @var PropertyDeclarationNodeParser $propertyDeclarationNodeParser */
-    protected $propertyDeclarationNodeParser;
+    private $propertyDeclarationNodeParser;
     /** @var DocCommentParser $docCommentParser */
-    protected $docCommentParser;
+    private $docCommentParser;
     /** @var MethodNodeParser $methodNodeParser */
-    protected $methodNodeParser;
+    private $methodNodeParser;
+    /** @var ASTFinder $astFinder */
+    private $astFinder;
 
     public function __construct()
     {
         parent::__construct();
+        $this->astFinder = new ASTFinder();
         $this->docCommentParser = new DocCommentParser();
         $this->propertyDeclarationNodeParser = new PropertyDeclarationNodeParser();
         $this->methodNodeParser = new MethodNodeParser();
@@ -97,6 +101,14 @@ class ClassNodeParser extends AbstractNodeParser
     }
 
     /**
+     * @param ASTFinder $finder
+     */
+    public function injectASTFinder($finder): void
+    {
+        $this->astFinder = $finder;
+    }
+
+    /**
      * @param PropertyDeclarationNodeParser $nodeParser Parser used for parsing properties.
      */
     public function injectPropertyDeclarationNodeParser($nodeParser): void
@@ -113,12 +125,20 @@ class ClassNodeParser extends AbstractNodeParser
     }
 
     /**
+     * @param DocCommentParser $parser
+     */
+    public function injectDocCommentParser($parser): void
+    {
+        $this->docCommentParser = $parser;
+    }
+
+    /**
      * Parse the doc comment found above the currently parsed node.
      * @param string $docComment The text of the phpDoc comment.
      * @param ParseContext $ctx The state of the parser when parsing this node.
      * @param SourceLocation $sourceLoc The file and line where the current node was found.
      */
-    protected function parseDocComment(string $docComment, ParseContext $ctx, SourceLocation $sourceLoc)
+    private function parseDocComment(string $docComment, ParseContext $ctx, SourceLocation $sourceLoc)
     {
         return $this->docCommentParser->parse($docComment, $ctx, $sourceLoc);
     }

@@ -5,6 +5,7 @@ use \PDoc\DocBlock;
 use \PDoc\SourceLocation;
 use \PDoc\Tags\ParamTag;
 use \PDoc\Tags\ReturnTag;
+use \PDoc\Types\AbstractType;
 
 /**
  * Definition of non-class functions (class methods treated as PHPMethod).
@@ -15,8 +16,8 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
 {
     /** @var PHPParameter[] $parameters */
     public $parameters = [];
-    /** @var \PDoc\Types\AbstractType $returnType */
-    public $returnType = 'any';
+    /** @var AbstractType $returnType */
+    public $returnType;
     /** @var string $returnDescription */
     public $returnDescription = '';
 
@@ -26,11 +27,12 @@ class PHPFunction extends AbstractEntity implements \JsonSerializable
      * @param DocBlock $docBlock
      * @param PHPParameter[] $parameters
      */
-    public function __construct(string $name, SourceLocation $loc, DocBlock $docBlock, $parameters = [])
+    public function __construct(string $name, SourceLocation $loc, AbstractType $returnType, DocBlock $docBlock, $parameters = [])
     {
         foreach ($parameters as $parameter) {
             $this->parameters[$parameter->name] = $parameter;
         }
+        $this->returnType = $returnType;
         parent::__construct('function', $name, $loc, $docBlock);
     }
     /**

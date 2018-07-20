@@ -40,4 +40,8 @@ class PropertyDeclarationNodeParser extends AbstractNodeParser
     {
         $this->astFinder = $finder;
     }
+    public function injectPropertyNodeParser($parser)
+    {
+        $this->propertyNodeParser = $parser;
+    }
 }
