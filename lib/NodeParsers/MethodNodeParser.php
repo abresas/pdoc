@@ -74,7 +74,6 @@ class MethodNodeParser extends AbstractNodeParser
      * @param int $flags The AST flags set in the current method node
      * @param SourceLocation $sourceLoc
      * @param string $nodeName The method name according to AST
-     * @param ParseContext $ctx
      * @return string "public", "protected" or "private"
      */
     private function parseVisibility(int $flags, SourceLocation $sourceLoc, string $nodeName)

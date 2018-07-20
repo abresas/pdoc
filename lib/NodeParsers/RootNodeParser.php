@@ -3,6 +3,7 @@ namespace PDoc\NodeParsers;
 
 use \ast\Node;
 
+use \PDoc\ASTFinder;
 use \PDoc\ParseContext;
 
 /**
@@ -22,6 +23,8 @@ class RootNodeParser extends AbstractNodeParser
     protected $namespaceNodeParser;
     /** @var UseAlias $useNodeParser Parser used for parsing aliases. */
     protected $useNodeParser;
+    /** @var ASTFinder $astFinder */
+    private $astFinder;
 
     public function __construct()
     {
@@ -30,7 +33,9 @@ class RootNodeParser extends AbstractNodeParser
         $this->functionNodeParser = new FunctionNodeParser();
         $this->namespaceNodeParser = new NamespaceNodeParser();
         $this->useNodeParser = new UseNodeParser();
+        $this->astFinder = new ASTFinder();
     }
+
     /**
      * @param Node $node The root AST node of the file.
      * @param ParseContext $ctx The shared context for all parsers of the file.
@@ -41,7 +46,7 @@ class RootNodeParser extends AbstractNodeParser
         $nsNode = $this->astFinder->firstOfKind($node, \ast\AST_NAMESPACE);
         if (!is_null($nsNode)) {
             $namespace = $this->namespaceNodeParser->parse($nsNode, $ctx);
-            $ctx->namespace = $namespace;
+            $ctx = new ParseContext($ctx->filePath, $namespace, $ctx->aliases, $ctx->astFlags);
         }
 
         $ctx->addAliases($this->astFinder->parseWith($node, $ctx, \ast\AST_USE_ELEM, $this->useNodeParser));
@@ -52,20 +57,33 @@ class RootNodeParser extends AbstractNodeParser
 
         return new FileParseResult($namespace, $classes, $functions);
     }
+
     public function injectClassNodeParser($nodeParser): void
     {
         $this->classNodeParser = $nodeParser;
     }
+
+    public function injectUseNodeParser($nodeParser): void
+    {
+        $this->useNodeParser = $nodeParser;
+    }
+
     public function injectFunctionNodeParser($nodeParser): void
     {
         $this->functionNodeParser = $nodeParser;
     }
+
     public function injectNamespaceNodeParser($nodeParser): void
     {
         $this->namespaceNodeParser = $nodeParser;
     }
-    public function injectUseNodeParser($nodeParser): void
+
+    /**
+     * @param ASTFinder $finder
+     */
+    public function injectASTFinder($finder): void
     {
-        $this->useNodeParse = $nodeParser;
+        $this->astFinder = $finder;
     }
+
 }
