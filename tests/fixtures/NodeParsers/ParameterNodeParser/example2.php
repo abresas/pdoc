@@ -1,6 +1,6 @@
 <?php
 
-function foo($x)
+function bar($x)
 {
     return $x * 2;
 }
