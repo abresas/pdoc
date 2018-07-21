@@ -16,7 +16,7 @@
 			{% for namespace in namespaces %}
 			<h2>{{ namespace.name }}</h2>
 
-			{% for class in namespace.classes %}
+			{% for class in namespace.Classes %}
 			<div class="class_name"><a href="{{ class.URI }}">{{ class.name }}</a></div>
 			<div class="class_short_description">{{ class.shortDescription }}</div>
 			{% endfor %}

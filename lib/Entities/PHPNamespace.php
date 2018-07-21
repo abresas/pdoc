@@ -42,6 +42,22 @@ class PHPNamespace implements \JsonSerializable
             'functions' => $this->functions,
         ];
     }
+
+    /**
+     * @return PHPClass[]
+     */
+    public function getClasses(): array
+    {
+        $classes = [];
+        foreach ($this->classes as $class) {
+            $classes[] = $class;
+        }
+        uasort($classes, function ($c1, $c2) {
+            return $c1->getURI() < $c2->getURI() ? -1 : 1;
+        });
+        return $classes;
+    }
+
     /**
      * Add classes to the list of classes in this namespace.
      */

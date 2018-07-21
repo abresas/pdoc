@@ -11,7 +11,7 @@
 		</div>
 		<div id="ns-{{ namespace.URI }}" class="collapse">
 			<ul>
-				{% for class in namespace.classes %}
+				{% for class in namespace.Classes %}
 				<li><a href="{{ class.URI }}">{{ class.name }}</a></li>
 				{% endfor %}
 			</ul>
