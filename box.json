@@ -1,0 +1,11 @@
+{
+	"directories": [
+		"cli",
+		"lib",
+		"vendor/"
+	],
+	"files": ["vendor/autoload.php"],
+	"main": "cli/pdoc.php",
+	"stub": true,
+	"output": "build/pdoc.phar"
+}
